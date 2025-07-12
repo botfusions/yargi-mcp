@@ -1,21 +1,26 @@
-# Test HTTP Server - Fixed Syntax
+# Real Yargi-MCP Server
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Create test server script
-RUN echo 'from http.server import HTTPServer, BaseHTTPRequestHandler\n\
-class Handler(BaseHTTPRequestHandler):\n\
-    def do_GET(self):\n\
-        self.send_response(200)\n\
-        self.end_headers()\n\
-        self.wfile.write(b"Yargi MCP Test OK")\n\
-\n\
-print("Starting HTTP server on port 8001...")\n\
-server = HTTPServer(("0.0.0.0", 8001), Handler)\n\
-server.serve_forever()' > server.py
+# System dependencies
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-EXPOSE 8001
+# Copy requirements and install
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy source code
+COPY . .
+
+# Environment
+ENV PYTHONUNBUFFERED=1
+
+# No health check
 HEALTHCHECK NONE
 
-CMD ["python", "server.py"]
+# Expose port
+EXPOSE 8001
+
+# Start the real MCP server
+CMD ["python", "mcp_server_main.py"]
