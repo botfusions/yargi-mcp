@@ -24,5 +24,8 @@ ENV PORT=8001
 # Expose port
 EXPOSE 8001
 
+# Override any inherited health check
+HEALTHCHECK NONE
+
 # Start server
 CMD ["python", "mcp_server_main.py"]
