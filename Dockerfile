@@ -21,4 +21,4 @@ HEALTHCHECK NONE
 
 # Simple start
 EXPOSE 8001
-CMD ["python", "-c", "import mcp_server_main; print('Starting...'); exec(open('mcp_server_main.py').read())"]
+CMD ["python", "mcp_server_main.py"]
