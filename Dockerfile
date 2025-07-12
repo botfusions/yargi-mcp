@@ -1,24 +1,9 @@
-# Minimal yargi-mcp Dockerfile
+# Test HTTP Server
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# System dependencies
-RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
-
-# Copy and install requirements
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-
-# Copy source
-COPY . .
-
-# Environment
-ENV PYTHONUNBUFFERED=1
-
-# No health check at all
+EXPOSE 8001
 HEALTHCHECK NONE
 
-# Simple start
-EXPOSE 8001
-CMD ["python", "mcp_server_main.py"]
+CMD ["python", "-c", "from http.server import HTTPServer, BaseHTTPRequestHandler; class Handler(BaseHTTPRequestHandler): def do_GET(self): self.send_response(200); self.end_headers(); self.wfile.write(b'Yargi MCP Test OK'); HTTPServer(('0.0.0.0', 8001), Handler).serve_forever()"]
