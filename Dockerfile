@@ -1,4 +1,4 @@
-# Real Yargi-MCP Server
+# Yargi-MCP HTTP Mode
 FROM python:3.11-slim
 
 WORKDIR /app
@@ -22,5 +22,5 @@ HEALTHCHECK NONE
 # Expose port
 EXPOSE 8001
 
-# Start the real MCP server
-CMD ["python", "mcp_server_main.py"]
+# Start in HTTP mode instead of STDIO
+CMD ["python", "-c", "import sys; sys.path.append('.'); from mcp_server_main import mcp; mcp.run(transport='http', host='0.0.0.0', port=8001)"]
