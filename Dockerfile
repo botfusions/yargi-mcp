@@ -1,31 +1,24 @@
-# yargi-mcp Simple Dockerfile
+# Minimal yargi-mcp Dockerfile
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# Install system dependencies
-RUN apt-get update && apt-get install -y \
-    curl \
-    git \
-    && rm -rf /var/lib/apt/lists/*
+# System dependencies
+RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
-# Install Python dependencies
+# Copy and install requirements
 COPY requirements.txt .
-RUN pip install --upgrade pip
 RUN pip install -r requirements.txt
 
-# Copy application
+# Copy source
 COPY . .
 
 # Environment
 ENV PYTHONUNBUFFERED=1
-ENV PORT=8001
 
-# Expose port
-EXPOSE 8001
-
-# Override any inherited health check
+# No health check at all
 HEALTHCHECK NONE
 
-# Start server
-CMD ["python", "mcp_server_main.py"]
+# Simple start
+EXPOSE 8001
+CMD ["python", "-c", "import mcp_server_main; print('Starting...'); exec(open('mcp_server_main.py').read())"]
