@@ -112,6 +112,818 @@ from kvkk_mcp_module.models import (
 
 app = create_app()
 
+# --- Tool Documentation Resources ---
+@app.resource("docs://tools/yargitay")
+async def get_yargitay_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Yargıtay (Court of Cassation) Tools Documentation
+
+## Court Hierarchy and Position
+Yargıtay is Turkey's highest civil and criminal court. It serves as the final appellate authority and establishes legal precedents for civil and criminal cases.
+
+**Dual API System:**
+- **Primary API (search_yargitay_detailed)**: Official karararama.yargitay.gov.tr
+- **Bedesten API (search_yargitay_bedesten)**: Alternative bedesten.adalet.gov.tr
+
+## Chamber Filtering Options (52 Total)
+
+### Civil Chambers (Hukuk Daireleri)
+- **Civil General Assembly** (Hukuk Genel Kurulu)
+- **1st Civil Chamber** through **23rd Civil Chamber** (23 civil chambers)
+- **Civil Chambers Presidents Board** (Hukuk Daireleri Başkanlar Kurulu)
+
+### Criminal Chambers (Ceza Daireleri)  
+- **Criminal General Assembly** (Ceza Genel Kurulu)
+- **1st Criminal Chamber** through **23rd Criminal Chamber** (23 criminal chambers)
+- **Criminal Chambers Presidents Board** (Ceza Daireleri Başkanlar Kurulu)
+
+### General Assemblies
+- **Grand General Assembly** (Büyük Genel Kurulu)
+
+## Search Techniques
+
+### Primary API (search_yargitay_detailed)
+```
+Simple search: "mülkiyet"
+AND operator: "mülkiyet AND tapu"
+OR operator: "mülkiyet OR tapu" 
+NOT operator: "mülkiyet NOT satış"
+Wildcard: "mülk*"
+Exact phrase: "\"mülkiyet hakkı\""
+```
+
+### Bedesten API (search_yargitay_bedesten)
+```
+Regular search: phrase="mülkiyet kararı"
+Exact phrase: phrase="\"mülkiyet kararı\""
+Date filtering: kararTarihiStart="2024-01-01T00:00:00.000Z"
+```
+
+## Usage Scenarios
+- **Precedent research**: Supreme court decisions on specific topics
+- **Chamber-specific search**: Relevant chambers for specific legal areas  
+- **Historical analysis**: Decision trends in specific periods
+- **Jurisprudence tracking**: Changes in legal opinions
+
+## Best Practices
+1. **Use dual APIs**: Try both APIs for maximum coverage
+2. **Chamber filtering**: Select chambers based on relevant legal area
+3. **Exact phrases**: Use "\"term\"" for precise terms in Bedesten API
+4. **Date range**: Focus on last 2-3 years for recent developments
+
+## Common Civil Chambers
+- **1st Civil**: Property, land registry, liens
+- **4th Civil**: Labor law, collective agreements
+- **11th Civil**: Insurance, social security
+- **15th Civil**: Compensation, tort
+- **21st Civil**: Execution and bankruptcy
+
+## Common Criminal Chambers  
+- **1st Criminal**: General criminal offenses
+- **8th Criminal**: Economic and commercial crimes
+- **12th Criminal**: Official misconduct
+"""
+
+@app.resource("docs://tools/danistay")  
+async def get_danistay_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Danıştay (Council of State) Tools Documentation
+
+## Court Hierarchy and Position
+Danıştay is Turkey's highest administrative court. It makes final decisions on administrative acts and actions.
+
+**Triple API System:**
+- **Keyword API (search_danistay_by_keyword)**: AND/OR/NOT logic
+- **Detailed API (search_danistay_detailed)**: Comprehensive criteria  
+- **Bedesten API (search_danistay_bedesten)**: Alternative access
+
+## Chamber Filtering Options (27 Total)
+
+### Main Councils
+- **Grand General Assembly** (Büyük Gen.Kur.)
+- **Administrative Cases Council** (İdare Dava Daireleri Kurulu)
+- **Tax Cases Council** (Vergi Dava Daireleri Kurulu)
+- **Precedents Unification Council** (İçtihatları Birleştirme Kurulu)
+
+### Chambers (1-17)
+- **1st Chamber** through **17th Chamber** (Administrative case chambers)
+
+### Military Courts
+- **Military High Administrative Court** (Askeri Yüksek İdare Mahkemesi)
+- **Military High Administrative Court 1st-3rd Chambers**
+
+## Search Techniques
+
+### Keyword API
+```
+AND logic: andKelimeler=["imar", "plan"]
+OR logic: orKelimeler=["iptal", "yürütmeyi durdurma"]  
+NOT logic: notKelimeler=["ceza"]
+```
+
+### Detailed API
+```
+Chamber selection: daire="3. Daire"
+Case year: esasYil="2024"
+Decision date: kararTarihiBaslangic="01.01.2024"
+Legislation: mevzuatId=123
+```
+
+### Bedesten API  
+```
+Regular: phrase="idari işlem"
+Exact: phrase="\"idari işlem\""
+Date: kararTarihiStart="2024-01-01T00:00:00.000Z"
+```
+
+## Usage Scenarios
+- **Administrative law research**: Public administration decisions
+- **Tax law**: Financial matters and tax disputes
+- **Urban planning law**: City planning and building permits
+- **Personnel law**: Civil servant rights
+
+## Common Chamber Specializations
+- **1st Chamber**: Municipal, urban planning, environment  
+- **2nd Chamber**: Tax, customs, financial
+- **3rd Chamber**: Personnel, personal rights
+- **5th Chamber**: Administrative fines
+- **8th Chamber**: Higher education, education
+- **10th Chamber**: Health, social security
+
+## Best Practices
+1. **Triple API**: Use all three APIs for maximum coverage
+2. **Chamber selection**: Choose specialized chambers by subject area
+3. **Mevzuat bağlantısı**: İlgili kanun/tüzükle filtreleme
+4. **Kesin terim**: İdari hukuk terminolojisi için exact search
+"""
+
+@app.resource("docs://tools/constitutional_court")
+async def get_constitutional_court_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Anayasa Mahkemesi (Constitutional Court) Tools Documentation
+
+## Court Position
+Constitutional Court is Turkey's highest judicial body. It has two main functions:
+
+### 1. Norm Control (Norm Control)
+**Tool**: search_anayasa_norm_denetimi_decisions
+- Reviews constitutional compliance of laws and regulations
+- Abstract and concrete norm control
+
+### 2. Individual Application (Individual Application)  
+**Tool**: search_anayasa_bireysel_basvuru_report
+- Citizens' fundamental rights violation applications
+- Turkey's human rights protection mechanism
+
+## Norm Control Features
+
+### Comprehensive Filtering
+- **Application type**: Annulment, Objection, Other
+- **Applicant**: President, Parliament, Courts
+- **Legislation type**: Law, Decree, Regulation, Rules of procedure
+- **Result type**: Annulment, Rejection, Partial annulment
+
+### Advanced Search
+- **Member names**: Full names of participating justices
+- **Rapporteur**: Case rapporteur 
+- **Dissenting opinion**: Minority opinion, different view
+- **Press release**: Important decisions
+
+## Bireysel Başvuru Özellikleri
+
+### Temel Haklar Kategorileri
+- **Yaşam hakkı**: Ölüm olayları, güvenlik
+- **Adil yargılanma**: Süre, tarafsızlık, duruşma hakkı  
+- **İfade özgürlüğü**: Basın, düşünce, akademik özgürlük
+- **Din özgürlüğü**: İbadet, vicdan özgürlüğü
+- **Mülkiyet hakkı**: Kamulaştırma, tapu
+- **Özel hayat**: Gizlilik, aile hayatı
+
+### Başvuru Süreci
+- **Yurtiçi yollar**: Önce mahkeme kararı gerekli
+- **Süre sınırı**: 30 gün (60 gün istisnai)
+- **Kabul edilebilirlik**: Ön inceleme kriterleri
+
+## Paginated Content (5,000 characters)
+Her iki tool da sayfalanmış Markdown döndürür:
+- **page_number**: Sayfa numarası (1'den başlar)
+- **total_pages**: Toplam sayfa sayısı
+- **current_page**: Mevcut sayfa
+
+## Usage Scenarios
+
+### Norm Denetimi
+- **Kanun anayasaya uygunluk**: Yeni çıkan kanunların kontrolü
+- **Mahkeme iptali**: Kanunun belirli maddeleri
+- **Mevzuat uyum**: Anayasa değişikliği sonrası
+
+### Bireysel Başvuru
+- **İnsan hakları araştırması**: AİHM öncesi iç hukuk
+- **Temel hak ihlalleri**: Sistematik ihlal tespiti
+- **Emsal karar**: Benzer davalar için içtihat
+
+## Parameter Details
+### search_anayasa_norm_denetimi_decisions
+- **keywords_all**: Keywords for AND logic (all must be present)
+- **keywords_any**: Keywords for OR logic (any can be present) 
+- **keywords_exclude**: Keywords to exclude from results
+- **period**: Constitutional period - "ALL", "1" (1961 Constitution), "2" (1982 Constitution)
+- **case_number_esas**: Case registry number (e.g., '2023/123')
+- **decision_number_karar**: Decision number (e.g., '2023/456')
+- **first_review_date_start/end**: First review date range (DD/MM/YYYY)
+- **decision_date_start/end**: Decision date range (DD/MM/YYYY)
+- **application_type**: "ALL", "1" (İptal), "2" (İtiraz), "3" (Diğer)
+- **applicant_general_name**: General applicant name
+- **applicant_specific_name**: Specific applicant name
+- **official_gazette_date_start/end**: Official Gazette date range
+- **official_gazette_number_start/end**: Official Gazette number range
+- **has_press_release**: "ALL", "0" (No), "1" (Yes)
+- **has_dissenting_opinion**: "ALL", "0" (No), "1" (Yes)
+- **has_different_reasoning**: "ALL", "0" (No), "1" (Yes)
+- **attending_members_names**: List of attending members' exact names
+- **rapporteur_name**: Rapporteur's exact name
+- **norm_type**: Type of reviewed norm (law, decree, regulation, etc.)
+- **norm_id_or_name**: Number or name of the norm
+- **norm_article**: Article number of the norm
+- **review_outcomes**: List of review outcomes
+- **reason_for_final_outcome**: Main reason for decision outcome
+- **basis_constitution_article_numbers**: Supporting Constitution article numbers
+- **results_per_page**: Results per page (10, 20, 30, 40, 50)
+- **page_to_fetch**: Page number to fetch
+- **sort_by_criteria**: Sort criteria ('KararTarihi', 'YayinTarihi', 'Toplam')
+
+### search_anayasa_bireysel_basvuru_report
+- **keywords**: Keywords for AND logic (all must be present)
+- **page_to_fetch**: Page number for the report (default: 1)
+
+### Document Tools
+- **document_url**: URL path or full URL of the decision
+- **page_number**: Page number for paginated content (1-indexed, default: 1)
+
+## Best Practices
+1. **Norm control önce**: Kanun iptal edilmiş mi kontrol
+2. **Bireysel başvuru ikinci**: Kişisel hak ihlalleri için
+3. **Tarih aralığı**: Anayasa değişiklikleri sonrası dönemler
+4. **Anahtar kelime kombinasyonu**: Temel hak + konu alanı
+5. **Sayfa yönetimi**: Uzun kararlarda sayfa sayfa okuyun
+"""
+
+@app.resource("docs://tools/emsal")
+async def get_emsal_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Emsal (UYAP Precedent System) Tools Documentation
+
+## System Position
+Central precedent decision system providing access to all court decisions through the UYAP system.
+
+## Court Options
+- **Yargıtay**: First and second instance courts
+- **Danıştay**: Administrative court decisions
+- **Other**: Regional courts of justice, civil courts
+
+## Advanced Filtering Features
+- **Court type**: Civil, criminal, administrative
+- **Case/Decision number**: File tracking system
+- **Date range**: Flexible date selection
+- **Content search**: Keyword search within decision text
+
+## Usage Scenarios
+- **Kapsamlı emsal**: Tüm mahkeme seviyelerinden karar toplama
+- **Güncel içtihat**: En son hukuki gelişmeler
+- **Cross-reference**: Farklı mahkeme görüşlerini karşılaştırma
+
+## Best Practices
+1. **Spesifik terimler**: Hukuki terminoloji kullanın
+2. **Geniş arama**: Önce genel, sonra spesifik
+3. **Tarih stratejisi**: Mevzuat değişiklikleri dikkate alın
+4. **Cross-platform**: Aynı konuyu farklı mahkemelerde arayın
+"""
+
+@app.resource("docs://tools/uyusmazlik")
+async def get_uyusmazlik_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Uyuşmazlık Mahkemesi Tools Documentation
+
+## Court Position
+Adli ve idari yargı arasındaki görev uyuşmazlıklarını çözen özel yetkili mahkeme.
+
+## Dispute Types
+- **Görev uyuşmazlığı**: Hangi mahkeme bakacak konusunda anlaşmazlık
+- **Hüküm uyuşmazlığı**: Çelişkili mahkeme kararları
+- **Yetki uyuşmazlığı**: Yerel yetki sorunları
+
+## Form-Based Search Criteria
+- **Karar türü**: Müspet, menfi, hüküm uyuşmazlığı
+- **Taraf mahkemeler**: Adli-idari yargı organları
+- **Konu alanı**: Hukuk dalı bazlı filtreleme
+- **Tarih aralığı**: Karar tarihi seçimi
+
+## Usage Scenarios
+- **Yargı türü belirleme**: Hangi mahkemenin yetkili olduğu
+- **Çelişkili kararlar**: Farklı mahkeme kararları arasındaki uyuşmazlık
+- **Yetki sorunları**: Mahkeme yetkisi tartışmaları
+
+## Best Practices
+1. **Net kriterler**: Arama kriterlerini spesifik tutun
+2. **Taraf bilgisi**: Uyuşmazlık taraflarını belirtin
+3. **Konu odaklı**: İlgili hukuk dalını seçin
+"""
+
+@app.resource("docs://tools/kik")
+async def get_kik_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# KİK (Kamu İhale Kurumu) Tools Documentation
+
+## Kurum Konumu
+Kamu ihale uyuşmazlıklarının ilk ve son merci çözüm organı. Kamu İhale Kanunu kapsamındaki tüm ihaleler için yetkili.
+
+## Decision Types
+- **Uyuşmazlık**: İhale süreç itirazları
+- **Düzenleyici**: Mevzuat ve uygulama kararları  
+- **Mahkeme**: Mahkeme kararlarının uygulanması
+
+## Filtreleme Seçenekleri
+- **Karar numarası**: 2024/UH.II-1766 formatında
+- **Tarih aralığı**: Karar tarihi filtreleme
+- **İhaleyi yapan idare**: Bakanlık, belediye, hastane, üniversite
+- **Başvuru sahibi**: Şirket, firma adı
+- **İhale konusu**: Mal, hizmet, yapım işi
+
+## Sayfalanmış İçerik Özelliği
+5.000 karakterlik sayfalar halinde Markdown formatında sunulur.
+
+## Usage Scenarios
+- **İhale hukuku**: Kamu alımları, süreç kuralları
+- **Başvuru hazırlığı**: Benzer davalar, emsal kararlar
+- **Mevzuat yorumu**: Kamu İhale Kanunu uygulaması
+- **İtiraz stratejisi**: Başarılı itiraz örnekleri
+
+## İhale Süreç Aşamaları
+1. **İhale öncesi**: İlan, şartname hazırlığı
+2. **İhale aşaması**: Teklif verme, değerlendirme
+3. **İhale sonrası**: Sonuç bildirimi, itirazlar
+4. **Sözleşme**: İmza, uygulama
+
+## Parameter Details
+### search_kik_decisions  
+- **karar_tipi**: Decision type - "rbUyusmazlik" (disputes), "rbDuzenleyici" (regulatory), "rbMahkeme" (court)
+- **karar_no**: Decision number (e.g., '2024/UH.II-1766')
+- **karar_tarihi_baslangic**: Decision start date (DD.MM.YYYY format)
+- **karar_tarihi_bitis**: Decision end date (DD.MM.YYYY format)
+- **basvuru_sahibi**: Applicant name/company
+- **ihaleyi_yapan_idare**: Procuring entity (ministry, municipality, etc.)
+- **basvuru_konusu_ihale**: Tender subject/description
+- **karar_metni**: Text search with operators: +word (AND), -word (exclude)
+- **yil**: Decision year
+- **resmi_gazete_tarihi**: Official Gazette date (DD.MM.YYYY)
+- **resmi_gazete_sayisi**: Official Gazette number
+- **page**: Results page number
+
+### get_kik_document_markdown
+- **karar_id**: Base64 encoded decision identifier from search results
+- **page_number**: Page number for paginated content (1-indexed, default: 1)
+
+## Best Practices
+1. **İhale türü**: Açık, belli istekliler arası, pazarlık
+2. **Süreç aşaması**: Hangi aşamada sorun olduğu
+3. **Hukuki dayanak**: İlgili KİK kanun maddesi
+4. **Sayfa yönetimi**: Uzun kararları bölümler halinde okuyun
+"""
+
+@app.resource("docs://tools/rekabet")
+async def get_rekabet_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Rekabet Kurumu (Competition Authority) Tools Documentation
+
+## Kurum Konumu  
+Rekabet hukuku ihlallerini inceleyen ve ceza veren idari otorite. Rekabet Kanunu kapsamında yetkili.
+
+## Decision Types
+- **Birleşme ve Devralma**: Şirket satın almaları, füzyonlar
+- **Rekabet İhlali**: Anlaşma, hakim durum kötüye kullanımı
+- **Menfi Tespit ve Muafiyet**: İhlal yok kararları, muafiyetler
+- **Özelleştirme**: Kamu şirketleri satışı onayları
+
+## Filtreleme Özellikleri
+- **PDF metin arama**: Tam metin içinde kelime arama
+- **Karar türü**: Spesifik kategori seçimi
+- **Tarih aralığı**: 1997'den günümüze karar arşivi
+- **Sektör**: Telekomünikasyon, bankacılık, enerji, perakende
+
+## Rekabet Hukuku Temel Kavramları
+- **Hakim durum**: Pazar gücü
+- **Kartel**: Fiyat anlaşması
+- **Dikey anlaşmalar**: Tedarikci-bayi ilişkileri
+- **Konsantrasyon**: Birleşme işlemleri
+
+## Usage Scenarios
+- **Antitrust araştırması**: Tekelleşme, kartel soruşturmaları  
+- **Birleşme incelemesi**: M&A transaction değerlendirmesi
+- **Sektör analizi**: Belirli pazarlardaki rekabet durumu
+- **Ceza hesaplama**: İhlal cezası örnekleri
+
+## Sektörel Uzmanlık Alanları
+1. **Telekomünikasyon**: Operatör rekabeti
+2. **Enerji**: Elektrik, doğalgaz piyasası
+3. **Finans**: Bankacılık, sigorta
+4. **Perakende**: Zincir mağazalar
+5. **İnşaat**: Müteahhitlik sektörü
+
+## Parameter Details
+### search_rekabet_kurumu_decisions
+- **sayfaAdi**: Search in decision title (Başlık)
+- **YayinlanmaTarihi**: Publication date (DD.MM.YYYY format)
+- **PdfText**: Search text. For exact phrases use double quotes: "vertical agreement"
+- **KararTuru**: Decision type - "Birleşme ve Devralma", "Rekabet İhlali", etc.
+- **KararSayisi**: Decision number (Karar Sayısı)
+- **KararTarihi**: Decision date (DD.MM.YYYY format)
+- **page**: Page number for results list
+
+### get_rekabet_kurumu_document
+- **karar_id**: GUID from search results
+- **page_number**: Requested page for Markdown content (1-indexed, default: 1)
+
+## Best Practices
+1. **Sektör odaklı**: İlgili sektörde arama yapın
+2. **Karar türü seçimi**: İhtiyacınıza uygun kategori
+3. **Güncel mevzuat**: Mevzuat değişiklikleri takibi
+4. **Sayfa yönetimi**: Uzun analizleri bölümler halinde
+"""
+
+@app.resource("docs://tools/bedesten_api_courts")
+async def get_bedesten_api_courts_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Bedesten API Mahkemeleri Tools Documentation
+
+## Bedesten API Sistemi
+bedesten.adalet.gov.tr üzerinden Türk adalet sistemi hiyerarşisindeki mahkemelere erişim.
+
+## Mahkeme Hiyerarşisi Kapsamı
+
+### 1. Yerel Hukuk Mahkemeleri (Local Civil Courts)
+**Tool**: search_yerel_hukuk_bedesten
+- **Konum**: İlk derece mahkemeler
+- **Yetki**: Hukuki uyuşmazlıklar (sözleşme, tazminat, mülkiyet)
+- **Önem**: Toplumun günlük hukuki sorunları
+
+### 2. İstinaf Hukuk Mahkemeleri (Civil Courts of Appeals)  
+**Tool**: search_istinaf_hukuk_bedesten
+- **Konum**: Orta derece (Yerel -> İstinaf -> Yargıtay)
+- **Yetki**: Yerel mahkeme kararlarına itiraz
+- **Önem**: Temyiz öncesi son kontrol
+
+### 3. Kanun Yararına Bozma (KYB)
+**Tool**: search_kyb_bedesten  
+- **Konum**: Olağanüstü kanun yolu
+- **Başvuru sahibi**: Cumhuriyet Başsavcılığı
+- **Amaç**: Hukuka aykırı kararları düzeltme
+- **Özellik**: Sanık aleyhine olsa bile hukuk yararına
+
+## Ortak Bedesten API Özellikleri
+
+### Tarih Filtreleme (ISO 8601)
+```
+Başlangıç: kararTarihiStart="2024-01-01T00:00:00.000Z"
+Bitiş: kararTarihiEnd="2024-12-31T23:59:59.999Z"
+Tek gün: "2024-06-25T00:00:00.000Z" - "2024-06-25T23:59:59.999Z"
+```
+
+### Kesin Cümle Arama
+```
+Normal: phrase="sözleşme ihlali"  (kelimeler ayrı ayrı)
+Kesin: phrase="\"sözleşme ihlali\""  (tam cümle)
+```
+
+### Sayfalama
+- **pageSize**: 1-100 arası sonuç sayısı
+- **pageNumber**: Sayfa numarası (1'den başlar)
+
+## Mahkeme Özellikleri
+
+### Yerel Hukuk Mahkemeleri
+**Yaygın Dava Türleri**:
+- Sözleşme ihlali davaları
+- Tazminat talepleri  
+- Mülkiyet uyuşmazlıkları
+- Aile hukuku (boşanma, nafaka)
+- Ticari uyuşmazlıklar (küçük-orta ölçek)
+
+**Kullanım Senaryoları**:
+- Günlük hukuki sorunlar
+- Vatandaş hakları
+- Ticaret hukuku temelleri
+- İcra takipleri
+
+### İstinaf Hukuk Mahkemeleri  
+**İnceleme Kapsamı**:
+- Yerel mahkeme kararlarının kontrolü
+- Hukuki ve maddi hata arayışı
+- Yeniden yargılama (sınırlı)
+
+**Kullanım Senaryoları**:
+- Temyiz stratejisi gelişitirme
+- İstinaf mahkemesi içtihatları
+- Yerel-üst mahkeme uyumu analizi
+
+### Kanun Yararına Bozma (KYB)
+**Başvuru Koşulları**:
+- Kesinleşmiş mahkeme kararı
+- Hukuka açık aykırılık
+- Cumhuriyet Başsavcılığı başvurusu
+- Sanık aleyhine sonuç doğurmama
+
+**Kullanım Senaryoları**:
+- Sistematik hukuki hatalar
+- İçtihat birliğini sağlama
+- Hukuk güvenliği
+- Nadir ve özel hukuki durumlar
+
+## Arama Stratejileri
+
+### Hiyerarşik Arama
+```
+1. Yerel mahkeme -> Gündelik sorunlar
+2. İstinaf -> Kompleks yorumlar  
+3. KYB -> İstisnai hukuki durumlar
+```
+
+### Kesin Terim Kullanımı
+```
+Yerel: "\"sözleşme ihlali\""
+İstinaf: "\"temyiz incelemesi\""  
+KYB: "\"kanun yararına bozma\""
+```
+
+### Tarih Stratejisi
+- **Son 2 yıl**: Güncel içtihat
+- **5-10 yıl**: Yerleşik görüşler
+- **Mevzuat değişikliği sonrası**: Yeni uygulamalar
+
+## Best Practices
+1. **Hiyerarşi takibi**: Alt mahkemeden üst mahkemeye
+2. **Kesin cümle**: Hukuki terimler için "\"terim\""
+3. **Tarih aralığı**: İlgili mevzuat dönemleri
+4. **Cross-reference**: Aynı konuyu farklı seviyelerde
+5. **Minimal sonuç**: KYB çok nadir, az sonuç beklenir
+
+## Document ID Formatı
+Tüm Bedesten mahkemeleri documentId döndürür:
+- **Format**: Alfanumerik string
+- **Kullanım**: get_*_bedesten_document_markdown fonksiyonları
+- **İçerik**: HTML/PDF -> Markdown conversion
+"""
+
+@app.resource("docs://tools/sayistay")
+async def get_sayistay_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# Sayıştay (Court of Accounts) Tools Documentation
+
+## Sayıştay'ın Konumu
+Türkiye'nin en üst mali denetim organı. Kamu kaynaklarının kullanımını denetler ve mali disiplini sağlar.
+
+## Üç Tür Karar Sistemi
+
+### 1. Genel Kurul Kararları (Interpretive Rulings)
+**Tool**: search_sayistay_genel_kurul
+- **İşlev**: Mali mevzuat yorumlama
+- **Kapsam**: 2006-2024 yılları arası
+- **Özellik**: Bağlayıcı yorumlar
+
+**Filtreleme Seçenekleri**:
+- **Karar numarası**: Spesifik karar arama
+- **Tarih aralığı**: Başlangıç-bitiş tarihleri
+- **Karar tamamı**: Tam metin arama (400 karakter)
+
+### 2. Temyiz Kurulu Kararları (Appeals Board)
+**Tool**: search_sayistay_temyiz_kurulu  
+- **İşlev**: Daire kararlarına itiraz incelemesi
+- **8 Daire Filtreleme**: Uzmanlık alanlarına göre
+
+**Daire Uzmanlaşmaları**:
+- **1. Daire**: Genel bütçeli idareler
+- **2. Daire**: Mahalli idareler  
+- **3. Daire**: Sosyal güvenlik kurumları
+- **4. Daire**: KİT ve bağlı ortaklıklar
+- **5. Daire**: Düzenleyici kuruluşlar
+- **6. Daire**: Vakıflar, dernekler
+- **7. Daire**: Üniversiteler, eğitim
+- **8. Daire**: Yatırım projeleri
+
+**Filtreleme Seçenekleri**:
+- **İdare türü**: Bakanlık, belediye, üniversite, KİT
+- **Temyiz karar**: Tam metin arama
+- **Konu sınıflandırması**: Harcama, gelir, taşınır-taşınmaz
+
+### 3. Daire Kararları (Chamber Decisions)  
+**Tool**: search_sayistay_daire
+- **İşlev**: İlk derece denetim bulguları
+- **8 Daire**: Aynı uzmanlaşma alanları
+
+**Filtreleme Seçenekleri**:
+- **Yargılama dairesi**: 1-8 arası daire seçimi
+- **Hesap yılı**: Mali yıl bazlı
+- **Web karar metni**: İçerik arama
+
+## Ortak Özellikler
+
+### Sayfalanmış Markdown
+Tüm Sayıştay belgeleri sayfalanmış format:
+- **5.000 karakter** per sayfa
+- **page_number**: Sayfa numarası
+- **total_pages**: Toplam sayfa
+
+### Tarih Aralığı Desteği
+- **Genel Kurul**: 2006-2024 (18 yıl)
+- **Temyiz/Daire**: Mevcut veriler üzerinde
+
+## Usage Scenarios
+
+### Mali Mevzuat Araştırması
+```
+Genel Kurul -> Hukuki yorum
+Temyiz -> Uygulama detayları  
+Daire -> Spesifik örnekler
+```
+
+### Kamu Mali Yönetimi
+- **Bütçe uygulama**: Harcama usulleri
+- **İhale süreçleri**: Kamu alımları denetimi
+- **Personel giderleri**: Özlük hakları mali boyutu
+- **Yatırım projeleri**: Büyük ölçekli projeler
+
+### Kurumsal Denetim
+- **KİT yönetimi**: Kamu iktisadi teşebbüsleri
+- **Belediye maliyesi**: Yerel yönetim harcamaları  
+- **Üniversite bütçesi**: Yükseköğretim mali yönetimi
+- **Sosyal güvenlik**: SGK, Bağ-Kur mali işlemleri
+
+## Arama Stratejileri
+
+### Hiyerarşik Yaklaşım
+1. **Genel Kurul**: Konunun hukuki çerçevesi
+2. **Temyiz**: Tartışmalı uygulamalar
+3. **Daire**: Günlük uygulama örnekleri
+
+### Daire Bazlı Strateji
+```
+Mali konu -> İlgili daire seçimi -> Derinlemesine arama
+Örnek: KİT mali sorunları -> 4. Daire
+```
+
+### Tarih Odaklı Strateji
+- **Son 2 yıl**: Güncel uygulamalar
+- **5 yıl**: Yerleşik görüşler  
+- **2006-2024**: Tarihsel gelişim
+
+## Best Practices
+1. **Daire uzmanlaşması**: İlgili kuruma uygun daire
+2. **Hiyerarşik sıralama**: Genel Kurul -> Temyiz -> Daire
+3. **Mali dönem**: Bütçe yılları bazında arama
+4. **Teknik terimler**: Mali mevzuat terminolojisi
+5. **Cross-reference**: Farklı seviyelerden görüş karşılaştırma
+
+## İdare Türü Kodları
+- **1**: Genel bütçeli
+- **2**: Özel bütçeli  
+- **3**: Düzenleyici kuruluşlar
+- **4**: Mahalli idareler
+- **5**: Sosyal güvenlik
+- **6**: KİT
+- **7**: Vakıf/dernek
+- **8**: Diğer kamu kuruluşları
+"""
+
+@app.resource("docs://tools/kvkk")
+async def get_kvkk_tools_documentation() -> str:
+    """Get document content as Markdown."""
+    return """
+# KVKK (Personal Data Protection Authority) Tools Documentation
+
+## KVKK'nın Konumu
+Kişisel Verilerin Korunması Kanunu'nun (KVKK) uygulanmasını denetleyen otorite.
+Türkiye'nin GDPR equivalent'ı olarak işlev görür.
+
+## Brave Search API Sistemi
+**Özellik**: Brave Search API ile kvkk.gov.tr sitesi taraması
+- **Site hedeflemeli**: Otomatik `site:kvkk.gov.tr "karar özeti"`
+- **Türkçe optimize**: Türkçe hukuki terimler için optimize
+- **Sayfalama**: page ve pageSize parametreleri
+
+## KVKK Karar Türleri
+
+### İdari Para Cezaları
+- **Veri ihlalleri**: Kişisel veri güvenliği ihlalleri
+- **Rıza eksiklikleri**: Açık rıza alınmaması
+- **Bilgilendirme yetersizliği**: Veri sahibi bilgilendirme
+- **Yurtdışı aktarım**: İzinsiz veri transferi
+
+### Uyum Değerlendirmeleri
+- **GDPR uyumluluğu**: AB mevzuatı ile uyum
+- **Veri koruma politikaları**: Kurumsal politika değerlendirme
+- **Teknik önlemler**: Güvenlik tedbirleri yeterliliği
+
+### Veri İhlali Bildirimları
+- **24 saat kuralı**: İhlal bildirimi süreleri
+- **Etki değerlendirmesi**: İhlal büyüklüğü analizi
+- **Düzeltici tedbirler**: İhlal sonrası alınacak önlemler
+
+## Arama Stratejileri
+
+### Türkçe Hukuki Terimler
+```
+Temel: "açık rıza", "veri ihlali", "kişisel veri"
+Teknik: "veri koruma", "güvenlik tedbirleri", "şifreleme"  
+Süreç: "bildirimi", "değerlendirme", "denetim"
+GDPR: "GDPR uyum", "Avrupa Birliği", "yeterlilik kararı"
+```
+
+### Sektör Bazlı Aramalar
+```
+Teknoloji: "e-ticaret", "mobil uygulama", "web sitesi"
+Sağlık: "hasta bilgileri", "tıbbi veriler"
+Finans: "bankacılık", "kredi kartı", "müşteri bilgileri"
+Eğitim: "öğrenci verileri", "elektronik okul"
+```
+
+### Ceza Türü Aramalar
+```
+İdari ceza: "idari para cezası", "ihlal tespiti"
+Uyarı: "uyarı kararı", "önlem alınması"
+Red: "şikayet redi", "yetki dışı"
+```
+
+## Paginated Content (5,000 characters)
+KVKK belgeleri sayfalanmış Markdown formatında:
+- **page_number**: Sayfa numarası (1'den başlar)
+- **total_pages**: Toplam sayfa sayısı  
+- **current_page**: Mevcut sayfa
+- **is_paginated**: Sayfalanma durumu
+
+## Usage Scenarios
+
+### Veri Koruma Uyumu
+- **GDPR compliance**: AB mevzuatı ile uyum kontrolü
+- **Şirket politikaları**: Kurumsal veri koruma
+- **Teknik önlemler**: Güvenlik tedbirleri benchmarking
+- **Uluslararası transfer**: Yurtdışı veri aktarımı kuralları
+
+### İhlal Analizi
+- **Benzer vakalar**: Aynı türde ihlal örnekleri
+- **Ceza miktarları**: İhlal türüne göre ceza analizi
+- **Düzeltici tedbirler**: İhlal sonrası yapılması gerekenler
+- **Önleme stratejileri**: Proaktif koruma tedbirleri
+
+### Sektörel Araştırma
+- **E-ticaret**: Online mağaza veri koruma
+- **Sağlık**: Hasta verileri güvenliği
+- **Finans**: Müşteri bilgileri koruma
+- **Teknoloji**: Uygulama ve platform sorumlulukları
+
+## KVKK Hukuki Framework
+
+### Temel İlkeler
+1. **Hukuka uygunluk**: Kanuna uygun işleme
+2. **Dürüstlük**: İyi niyet ilkesi
+3. **Şeffaflık**: Açık bilgilendirme
+4. **Amaçla sınırlılık**: Belirli amaçla işleme
+5. **Veri minimizasyonu**: Gerekli minimum veri
+6. **Doğruluk**: Güncel ve doğru veri
+
+### Veri Sahibi Hakları
+- **Bilgi alma**: Veri işlendiğini öğrenme
+- **Erişim**: Verilerine erişim talep etme
+- **Düzeltme**: Yanlış verileri düzeltme
+- **Silme**: Verilerin silinmesini isteme
+- **İtiraz**: Veri işlemeye karşı çıkma
+
+## Best Practices
+1. **Türkçe terimler**: Orijinal hukuki terminoloji
+2. **Sektör odaklı**: İlgili sektörle filtreleme
+3. **Güncel gelişmeler**: Son 2-3 yıl öncelikli
+4. **GDPR referansı**: AB mevzuatı ile karşılaştırma
+5. **Sayfa yönetimi**: Uzun kararları bölümler halinde
+
+## Yaygın KVKK Terimleri Sözlüğü
+- **Açık rıza**: Explicit consent
+- **Veri sorumlusu**: Data controller  
+- **Veri işleyici**: Data processor
+- **Kişisel veri**: Personal data
+- **Özel nitelikli veri**: Special categories of data
+- **Veri ihlali**: Data breach
+- **Veri koruma**: Data protection
+- **Yurtdışı aktarım**: International transfer
+"""
+
+
 # --- API Client Instances ---
 yargitay_client_instance = YargitayOfficialApiClient()
 danistay_client_instance = DanistayApiClient()
@@ -138,7 +950,7 @@ KARAR_TURU_ADI_TO_GUID_ENUM_MAP = {
 
 # --- MCP Tools for Yargitay ---
 @app.tool(
-    description="Search Court of Cassation (Yargıtay) decisions using the primary official API with advanced search operators, chamber filtering (52 options), and comprehensive criteria. This is Turkey's highest court for civil and criminal matters, providing supreme court precedents",
+    description="Parameter description",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -146,27 +958,8 @@ KARAR_TURU_ADI_TO_GUID_ENUM_MAP = {
     }
 )
 async def search_yargitay_detailed(
-    arananKelime: str = Field("", description="""Keyword to search for.
-    Search operators:
-    • Space between words = OR logic (arsa payı → "arsa" OR "payı")
-    • "exact phrase" = Exact match ("arsa payı" → exact phrase)
-    • word1+word2 = AND logic (arsa+payı → both words required)
-    • word* = Wildcard (bozma* → bozma, bozması, bozmanın, etc.)
-    • +"phrase1" +"phrase2" = Multiple required phrases
-    • +"required" -"excluded" = Include and exclude
-    Examples: arsa payı | "arsa payı" | +"arsa payı" +"bozma sebebi" | bozma*"""),
-    birimYrgKurulDaire: str = Field("ALL", description="""
-        Yargıtay chamber/board selection. Available options:
-        • 'ALL' for all chambers
-        • Hukuk Genel Kurulu (Civil General Assembly)
-        • 1. Hukuk Dairesi through 23. Hukuk Dairesi (Civil Chambers 1-23)
-        • Hukuk Daireleri Başkanlar Kurulu (Civil Chambers Presidents Board)
-        • Ceza Genel Kurulu (Criminal General Assembly)
-        • 1. Ceza Dairesi through 23. Ceza Dairesi (Criminal Chambers 1-23)
-        • Ceza Daireleri Başkanlar Kurulu (Criminal Chambers Presidents Board)
-        • Büyük Genel Kurulu (Grand General Assembly)
-        Total: 49 possible values
-    """),
+    arananKelime: str = Field("", description="Search keyword with OR/AND/wildcard operators"),
+    birimYrgKurulDaire: str = Field("ALL", description="Chamber selection (52 options: Civil/Criminal chambers, General Assemblies)"),
     birimYrgHukukDaire: str = Field("", description="Legacy field - use birimYrgKurulDaire instead"),
     birimYrgCezaDaire: str = Field("", description="Legacy field - use birimYrgKurulDaire instead"),
     esasYil: str = Field("", description="Case year for 'Esas No'."),
@@ -182,45 +975,7 @@ async def search_yargitay_detailed(
     pageSize: int = Field(10, ge=1, le=100, description="Number of results per page."),
     pageNumber: int = Field(1, ge=1, description="Page number to retrieve.")
 ) -> CompactYargitaySearchResult:
-    """
-    Searches Court of Cassation (Yargıtay) decisions using the primary official API.
-    
-    The Court of Cassation (Yargıtay) is Turkey's highest court for civil and criminal matters,
-    equivalent to a Supreme Court. This tool provides access to the most comprehensive database
-    of supreme court precedents with advanced search capabilities and filtering options.
-    
-    Key Features:
-    • Advanced search operators (AND, OR, wildcards, exclusions)
-    • Chamber filtering: 52 options (23 Civil (Hukuk) + 23 Criminal (Ceza) + General Assemblies (Genel Kurullar))
-    • Date range filtering with DD.MM.YYYY format
-    • Case number filtering (Case No (Esas No) and Decision No (Karar No))
-    • Pagination support (1-100 results per page)
-    • Multiple sorting options (by case number, decision number, date)
-    
-    SEARCH SYNTAX GUIDE:
-    • Words with spaces: OR search ("property share" finds ANY of the words)
-    • "Quotes": Exact phrase search ("property share" finds exact phrase)
-    • Plus sign (+): AND search (property+share requires both words)
-    • Asterisk (*): Wildcard (construct* matches variations)
-    • Minus sign (-): Exclude terms (avoid unwanted results)
-    
-    Common Search Patterns:
-    • Simple OR: property share (finds ~523K results)
-    • Exact phrase: "property share" (finds ~22K results)
-    • Multiple required: +"property share" +"annulment reason (bozma sebebi)" (finds ~234 results)
-    • Wildcard expansion: construct* (matches construction, constructive, etc.)
-    • Exclude unwanted: +"property share" -"construction contract"
-    
-    Use cases:
-    • Research supreme court precedents and legal principles
-    • Find decisions from specific chambers (Civil (Hukuk) vs Criminal (Ceza))
-    • Search for interpretations of specific legal concepts
-    • Analyze court reasoning on complex legal issues
-    • Track legal developments over time periods
-    
-    Returns structured search results with decision metadata. Use get_yargitay_document_markdown()
-    to retrieve full decision texts for detailed analysis.
-    """
+    """Search Yargıtay decisions using primary API with 52 chamber filtering and advanced operators."""
     
     # Convert "ALL" to empty string for API compatibility
     if birimYrgKurulDaire == "ALL":
@@ -261,42 +1016,14 @@ async def search_yargitay_detailed(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a specific Court of Cassation (Yargıtay) decision from the primary official API in Markdown format",
+    description="Retrieve full text of a Yargıtay decision in Markdown format. Before using, read docs://tools/yargitay",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
     }
 )
 async def get_yargitay_document_markdown(id: str) -> YargitayDocumentMarkdown:
-    """
-    Retrieves the full text of a specific Court of Cassation (Yargıtay) decision from the primary official API in Markdown format.
-    
-    This tool fetches complete supreme court decision documents and converts them to clean,
-    readable Markdown format suitable for detailed legal analysis and processing.
-    
-    Input Requirements:
-    • id: Decision ID from search_yargitay_detailed results
-    • ID must be non-empty string from official Court of Cassation (Yargıtay) database
-    
-    Output Format:
-    • Clean Markdown text with legal structure preserved
-    • Organized sections: case info, facts, legal reasoning, conclusion
-    • Proper formatting for citations and legal references
-    • Removes technical artifacts from source HTML
-    
-    Supreme Court Decision Content:
-    • Complete legal reasoning and precedent analysis
-    • Detailed examination of lower court decisions
-    • Citation of relevant laws, regulations, and prior cases
-    • Final ruling (karar) with legal justification
-    
-    Use for:
-    • Reading full supreme court decision texts
-    • Legal research and precedent (emsal) analysis
-    • Citation extraction and reference building
-    • Understanding supreme court legal reasoning
-    • Academic and professional legal research
-    """
+    """Get Yargıtay decision text as Markdown. Use ID from search results."""
     logger.info(f"Tool 'get_yargitay_document_markdown' called for ID: {id}")
     if not id or not id.strip(): raise ValueError("Document ID must be a non-empty string.")
     try:
@@ -307,7 +1034,7 @@ async def get_yargitay_document_markdown(id: str) -> YargitayDocumentMarkdown:
 
 # --- MCP Tools for Danistay ---
 @app.tool(
-    description="Search Council of State (Danıştay) decisions using keyword-based logic with AND/OR/NOT operators for complex administrative law research",
+    description="Search Danıştay decisions using keyword logic with AND/OR/NOT operators. Before using, read docs://tools/danistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -322,41 +1049,7 @@ async def search_danistay_by_keyword(
     pageNumber: int = Field(1, ge=1, description="Page number."),
     pageSize: int = Field(10, ge=1, le=100, description="Results per page.")
 ) -> CompactDanistaySearchResult:
-    """
-    Searches Council of State (Danıştay) decisions using keyword-based logic.
-    
-    The Council of State (Danıştay) is Turkey's highest administrative court, responsible for
-    reviewing administrative actions and providing administrative law precedents. This tool
-    provides flexible keyword-based searching with Boolean logic operators.
-    
-    Key Features:
-    • Boolean logic operators: AND, OR, NOT combinations
-    • Multiple keyword lists for complex search strategies
-    • Pagination support (1-100 results per page)
-    • Administrative law focus (permits, licenses, public administration)
-    • Complement to search_danistay_detailed for comprehensive coverage
-    
-    Keyword Logic:
-    • andKelimeler: ALL keywords must be present (AND logic)
-    • orKelimeler: ANY keyword can be present (OR logic)
-    • notAndKelimeler: EXCLUDE if ALL keywords present (NOT AND)
-    • notOrKelimeler: EXCLUDE if ANY keyword present (NOT OR)
-    
-    Administrative Law Use Cases:
-    • Research administrative court precedents
-    • Find decisions on specific government agencies
-    • Search for rulings on permits (ruhsat) and licenses (izin)
-    • Analyze administrative procedure interpretations
-    • Study public administration legal principles
-    
-    Examples:
-    • Simple AND: andKelimeler=["administrative act (idari işlem)", "annulment (iptal)"]
-    • OR search: orKelimeler=["permit (ruhsat)", "permission (izin)", "license (lisans)"]
-    • Complex: andKelimeler=["municipality (belediye)"], notOrKelimeler=["tax (vergi)"]
-    
-    Returns structured search results. Use get_danistay_document_markdown() for full texts.
-    For comprehensive Council of State (Danıştay) research, also use search_danistay_detailed and search_danistay_bedesten.
-    """
+    """Search Danıştay decisions with keyword logic."""
     
     search_query = DanistayKeywordSearchRequest(
         andKelimeler=andKelimeler,
@@ -383,7 +1076,7 @@ async def search_danistay_by_keyword(
         raise
 
 @app.tool(
-    description="Search Council of State (Danıştay) decisions using detailed criteria including chamber (daire) selection, case numbers, dates, and legislation references for comprehensive administrative law research",
+    description="Search Danıştay decisions with detailed criteria including chamber selection and case numbers. Before using, read docs://tools/danistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -408,44 +1101,7 @@ async def search_danistay_detailed(
     pageNumber: int = Field(1, ge=1, description="Page number."),
     pageSize: int = Field(10, ge=1, le=100, description="Results per page.")
 ) -> CompactDanistaySearchResult:
-    """
-    Performs detailed search for Council of State (Danıştay) decisions with comprehensive filtering.
-    
-    The Council of State (Danıştay) is Turkey's highest administrative court, providing final
-    rulings on administrative law matters. This tool offers the most comprehensive search
-    capabilities for administrative court decisions with detailed filtering options.
-    
-    Key Features:
-    • Chamber/Department (Daire) filtering (specify exact chamber like '1st Chamber (1. Daire)')
-    • Case number filtering (Case No (Esas No) and Decision No (Karar No) with ranges)
-    • Date range filtering with DD.MM.YYYY format
-    • Legislation-based search (law numbers, names, article numbers)
-    • Multiple sorting options (case number, decision date)
-    • Pagination support (1-100 results per page)
-    
-    Advanced Filtering Options:
-    • Specific chamber targeting for specialized administrative areas
-    • Sequential case number ranges for comprehensive coverage
-    • Legislation cross-referencing for regulatory compliance research
-    • Time-period analysis with precise date ranges
-    
-    Administrative Law Use Cases:
-    • Research specific administrative chambers' decisions
-    • Find rulings on specific laws and regulations
-    • Track administrative precedents over time periods
-    • Analyze government agency-specific decisions
-    • Study administrative procedure developments
-    • Research permit, license, and regulatory decisions
-    
-    Chamber Examples:
-    • '1st Chamber (1. Daire)' through '17th Chamber (17. Daire)' - Administrative chambers
-    • 'Tax Cases Chambers Council (Vergi Dava Daireleri Kurulu)' - Tax cases
-    • 'Administrative Cases Chambers Council (İdare Dava Daireleri Kurulu)' - Administrative cases
-    
-    Returns structured search results with comprehensive metadata.
-    Use get_danistay_document_markdown() for full decision texts.
-    For complete Council of State (Danıştay) coverage, also use search_danistay_by_keyword and search_danistay_bedesten.
-    """
+    """Search Danıştay decisions with detailed filtering."""
     
     search_query = DanistayDetailedSearchRequest(
         daire=daire,
@@ -482,44 +1138,14 @@ async def search_danistay_detailed(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a specific Council of State (Danıştay) decision from the primary official API in Markdown format",
+    description="Retrieve full text of a Danıştay decision in Markdown format. Before using, read docs://tools/danistay",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
     }
 )
 async def get_danistay_document_markdown(id: str) -> DanistayDocumentMarkdown:
-    """
-    Retrieves the full text of a specific Council of State (Danıştay) decision from the primary official API in Markdown format.
-    
-    This tool fetches complete administrative court decision documents and converts them to clean,
-    readable Markdown format suitable for detailed legal analysis and administrative law research.
-    
-    Input Requirements:
-    • id: Decision ID from search_danistay_by_keyword or search_danistay_detailed results
-    • ID must be non-empty string from official Council of State (Danıştay) database
-    
-    Output Format:
-    • Clean Markdown text with administrative legal structure preserved
-    • Organized sections: case info, administrative facts, legal analysis, ruling
-    • Proper formatting for administrative law citations and references
-    • Removes technical artifacts from source HTML
-    
-    Administrative Court Decision Content:
-    • Complete administrative law reasoning and precedent analysis
-    • Review of administrative actions (idari işlemler) and government decisions
-    • Citation of relevant administrative laws and regulations
-    • Final administrative ruling (karar) with legal justification
-    • Analysis of public administration procedures
-    
-    Use for:
-    • Reading full administrative court decision texts
-    • Administrative law research and precedent (emsal) analysis
-    • Government action review and compliance research
-    • Understanding administrative law principles
-    • Academic and professional administrative law study
-    • Regulatory compliance and permit/license (ruhsat/izin) law analysis
-    """
+    """Get Danıştay decision text as Markdown. Use ID from search results."""
     logger.info(f"Tool 'get_danistay_document_markdown' called for ID: {id}")
     if not id or not id.strip(): raise ValueError("Document ID must be a non-empty string for Danıştay.")
     try:
@@ -530,7 +1156,7 @@ async def get_danistay_document_markdown(id: str) -> DanistayDocumentMarkdown:
 
 # --- MCP Tools for Emsal ---
 @app.tool(
-    description="Search Precedent (Emsal) decisions using detailed criteria including court selection, case numbers, and date ranges for comprehensive precedent research across Turkish courts through UYAP system",
+    description="Search Emsal precedent decisions with detailed criteria across Turkish courts. Before using, read docs://tools/emsal",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -555,43 +1181,7 @@ async def search_emsal_detailed_decisions(
     page_number: int = Field(1, ge=1, description="Page number (accepts int)."),
     page_size: int = Field(10, ge=1, le=100, description="Results per page.")
 ) -> CompactEmsalSearchResult:
-    """
-    Searches for Precedent (Emsal) decisions using detailed criteria.
-    
-    The Precedent (Emsal) database contains precedent decisions from various Turkish courts
-    integrated through the UYAP (National Judiciary Informatics System). This tool provides
-    access to a comprehensive collection of court decisions that serve as legal precedents.
-    
-    Key Features:
-    • Multi-court coverage (BAM, Civil courts, Regional chambers)
-    • Keyword-based search across decision texts
-    • Court-specific filtering for targeted research
-    • Case number filtering (Case No (Esas No) and Decision No (Karar No) with ranges)
-    • Date range filtering with DD.MM.YYYY format
-    • Multiple sorting options and pagination support
-    
-    Court Selection Options:
-    • BAM Civil Courts: Higher regional civil courts
-    • Civil Courts: Local and first-instance civil courts
-    • Regional Civil Chambers: Specialized civil court departments
-    
-    Precedent Research Use Cases:
-    • Find precedent (emsal) decisions across multiple court levels
-    • Research court interpretations of specific legal concepts
-    • Analyze consistent legal reasoning patterns
-    • Study regional variations in legal decisions
-    • Track precedent development over time
-    • Compare decisions from different court types
-    
-    Search Strategy:
-    • Use keywords for conceptual searches
-    • Filter by specific courts for jurisdiction-focused research
-    • Combine with date ranges for temporal analysis
-    • Use case number ranges for comprehensive coverage
-    
-    Returns structured precedent data with court information and decision metadata.
-    Use get_emsal_document_markdown() to retrieve full precedent decision texts.
-    """
+    """Search Emsal precedent decisions with detailed criteria."""
     
     search_query = EmsalSearchRequest(
         keyword=keyword,
@@ -629,44 +1219,14 @@ async def search_emsal_detailed_decisions(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a specific Precedent (Emsal) decision in Markdown format from UYAP system",
+    description="Retrieve full text of an Emsal precedent decision in Markdown format. Before using, read docs://tools/emsal",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
     }
 )
 async def get_emsal_document_markdown(id: str) -> EmsalDocumentMarkdown:
-    """
-    Retrieves the full text of a specific Emsal (UYAP Precedent) decision in Markdown format.
-    
-    This tool fetches complete precedent decision documents from the UYAP system and converts
-    them to clean, readable Markdown format suitable for legal precedent analysis.
-    
-    Input Requirements:
-    • id: Decision ID from search_emsal_detailed_decisions results
-    • ID must be non-empty string from UYAP Emsal database
-    
-    Output Format:
-    • Clean Markdown text with legal precedent structure preserved
-    • Organized sections: court info, case facts, legal reasoning, conclusion
-    • Proper formatting for legal citations and cross-references
-    • Removes technical artifacts from source documents
-    
-    Precedent Decision Content:
-    • Complete court reasoning and legal analysis
-    • Detailed examination of legal principles applied
-    • Citation of relevant laws, regulations, and prior precedents
-    • Final ruling with precedent-setting reasoning
-    • Court-specific interpretations and legal standards
-    
-    Use for:
-    • Reading full precedent decision texts
-    • Legal precedent research and analysis
-    • Understanding court reasoning patterns
-    • Citation building and legal reference development
-    • Comparative legal analysis across court levels
-    • Academic and professional legal research
-    """
+    """Get document as Markdown."""
     logger.info(f"Tool 'get_emsal_document_markdown' called for ID: {id}")
     if not id or not id.strip(): raise ValueError("Document ID required for Emsal.")
     try:
@@ -677,7 +1237,7 @@ async def get_emsal_document_markdown(id: str) -> EmsalDocumentMarkdown:
 
 # --- MCP Tools for Uyusmazlik ---
 @app.tool(
-    description="Search Court of Jurisdictional Disputes (Uyuşmazlık Mahkemesi) decisions with comprehensive filtering for dispute resolution between different court systems",
+    description="Search Uyuşmazlık Mahkemesi decisions for jurisdictional disputes between court systems. Before using, read docs://tools/uyusmazlik",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -704,47 +1264,7 @@ async def search_uyusmazlik_decisions(
     herhangi_birisi: str = Field("", description="Search for texts containing any of the specified words."),
     not_hepsi: str = Field("", description="Exclude texts containing these specified words.")
 ) -> UyusmazlikSearchResponse:
-    """
-    Searches for Court of Jurisdictional Disputes (Uyuşmazlık Mahkemesi) decisions.
-    
-    The Court of Jurisdictional Disputes (Uyuşmazlık Mahkemesi) resolves jurisdictional disputes between different court systems
-    in Turkey, determining which court has jurisdiction over specific cases. This specialized
-    court handles conflicts between civil, criminal, and administrative jurisdictions.
-    
-    Key Features:
-    • Department filtering (Criminal, Civil, General Assembly decisions)
-    • Dispute type classification (Jurisdiction vs Judgment disputes)
-    • Decision outcome filtering (dispute resolution results)
-    • Case number and date range filtering
-    • Advanced text search with Boolean logic operators
-    • Official Gazette reference search
-    
-    Dispute Types:
-    • Jurisdictional Disputes (Görev Uyuşmazlığı): Which court has authority
-    • Judgment Disputes (Hüküm Uyuşmazlığı): Conflicting final decisions
-    
-    Departments:
-    • Criminal Section (Ceza Bölümü): Criminal section decisions
-    • Civil Section (Hukuk Bölümü): Civil section decisions  
-    • General Assembly Decisions (Genel Kurul Kararları): General Assembly decisions
-    
-    Advanced Search Options:
-    • tumce: Exact phrase matching
-    • wild_card: Phrase with inflections
-    • hepsi: All words must be present
-    • herhangi_birisi: Any word can be present
-    • not_hepsi: Exclude specified words
-    
-    Use cases:
-    • Research jurisdictional precedents
-    • Understand court system boundaries
-    • Analyze dispute resolution patterns
-    • Study inter-court conflict resolution
-    • Legal procedure and jurisdiction research
-    
-    Returns structured search results with dispute resolution information.
-    Use get_uyusmazlik_document_markdown_from_url() for full decision texts.
-    """
+    """Search Court of Jurisdictional Disputes decisions."""
     
     # Convert string literals to enums
     # Map "ALL" to TUMU for backward compatibility
@@ -788,7 +1308,7 @@ async def search_uyusmazlik_decisions(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a specific Court of Jurisdictional Disputes (Uyuşmazlık Mahkemesi) decision from its URL in Markdown format",
+    description="Retrieve full text of an Uyuşmazlık Mahkemesi decision from URL in Markdown format. Before using, read docs://tools/uyusmazlik",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -797,37 +1317,7 @@ async def search_uyusmazlik_decisions(
 async def get_uyusmazlik_document_markdown_from_url(
     document_url: str = Field(..., description="Full URL to the Uyuşmazlık Mahkemesi decision document from search results")
 ) -> UyusmazlikDocumentMarkdown:
-    """
-    Retrieves the full text of a specific Uyuşmazlık Mahkemesi decision from its URL in Markdown format.
-    
-    This tool fetches complete jurisdictional dispute resolution decisions and converts them
-    to clean, readable Markdown format suitable for legal analysis of inter-court disputes.
-    
-    Input Requirements:
-    • document_url: Full URL to the decision document from search_uyusmazlik_decisions results
-    • URL must be valid HttpUrl format from official Uyuşmazlık Mahkemesi database
-    
-    Output Format:
-    • Clean Markdown text with jurisdictional dispute structure preserved
-    • Organized sections: dispute facts, jurisdictional analysis, resolution ruling
-    • Proper formatting for legal citations and court system references
-    • Removes technical artifacts from source documents
-    
-    Jurisdictional Dispute Decision Content:
-    • Complete analysis of jurisdictional conflicts between court systems
-    • Detailed examination of applicable jurisdictional rules
-    • Citation of relevant procedural laws and court organization statutes
-    • Final resolution determining proper court jurisdiction
-    • Reasoning for jurisdictional boundaries and court authority
-    
-    Use for:
-    • Reading full jurisdictional dispute resolutions
-    • Understanding court system boundaries and authority
-    • Analyzing jurisdictional precedents and patterns
-    • Research on court organization and procedure
-    • Academic study of judicial system structure
-    • Legal practice guidance on proper court selection
-    """
+    """Get Uyuşmazlık Mahkemesi decision as Markdown."""
     logger.info(f"Tool 'get_uyusmazlik_document_markdown_from_url' called for URL: {str(document_url)}")
     if not document_url:
         raise ValueError("Document URL (document_url) is required for Uyuşmazlık document retrieval.")
@@ -839,7 +1329,7 @@ async def get_uyusmazlik_document_markdown_from_url(
 
 # --- MCP Tools for Anayasa Mahkemesi (Norm Denetimi) ---
 @app.tool(
-    description="Search Constitutional Court (Anayasa Mahkemesi) norm control decisions with comprehensive filtering for constitutional law research and judicial review analysis",
+    description="Parameter description",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -847,82 +1337,39 @@ async def get_uyusmazlik_document_markdown_from_url(
     }
 )
 async def search_anayasa_norm_denetimi_decisions(
-    keywords_all: List[str] = Field(default_factory=list, description="Keywords for AND logic."),
-    keywords_any: List[str] = Field(default_factory=list, description="Keywords for OR logic."),
-    keywords_exclude: List[str] = Field(default_factory=list, description="Keywords to exclude."),
-    period: Literal["ALL", "1", "2"] = Field("ALL", description="Constitutional period ('ALL': All, '1': 1961, '2': 1982)."),
-    case_number_esas: Optional[str] = Field(None, description="Case registry number (e.g., '2023/123')."),
-    decision_number_karar: Optional[str] = Field(None, description="Decision number (e.g., '2023/456')."),
-    first_review_date_start: Optional[str] = Field(None, description="First review start date (DD/MM/YYYY)."),
-    first_review_date_end: Optional[str] = Field(None, description="First review end date (DD/MM/YYYY)."),
-    decision_date_start: Optional[str] = Field(None, description="Decision start date (DD/MM/YYYY)."),
-    decision_date_end: Optional[str] = Field(None, description="Decision end date (DD/MM/YYYY)."),
-    application_type: Literal["ALL", "1", "2", "3"] = Field("ALL", description="Application type ('ALL': All, '1': İptal, '2': İtiraz, '3': Diğer)."),
-    applicant_general_name: Optional[str] = Field(None, description="General applicant name."),
-    applicant_specific_name: Optional[str] = Field(None, description="Specific applicant name."),
-    official_gazette_date_start: Optional[str] = Field(None, description="Official Gazette start date (DD/MM/YYYY)."),
-    official_gazette_date_end: Optional[str] = Field(None, description="Official Gazette end date (DD/MM/YYYY)."),
-    official_gazette_number_start: Optional[str] = Field(None, description="Official Gazette starting number."),
-    official_gazette_number_end: Optional[str] = Field(None, description="Official Gazette ending number."),
-    has_press_release: Literal["ALL", "0", "1"] = Field("ALL", description="Press release ('ALL': All, '0': No, '1': Yes)."),
-    has_dissenting_opinion: Literal["ALL", "0", "1"] = Field("ALL", description="Dissenting opinion ('ALL': All, '0': No, '1': Yes)."),
-    has_different_reasoning: Literal["ALL", "0", "1"] = Field("ALL", description="Different reasoning ('ALL': All, '0': No, '1': Yes)."),
-    attending_members_names: List[str] = Field(default_factory=list, description="List of attending members' exact names."),
-    rapporteur_name: Optional[str] = Field(None, description="Rapporteur's exact name."),
-    norm_type: Literal["ALL", "1", "2", "14", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "0", "13"] = Field("ALL", description="Type of reviewed norm."),
-    norm_id_or_name: Optional[str] = Field(None, description="Number or name of the norm."),
-    norm_article: Optional[str] = Field(None, description="Article number of the norm."),
-    review_outcomes: List[Literal["ALL", "1", "2", "3", "4", "5", "6", "7", "8", "12"]] = Field(default_factory=list, description="List of review outcomes."),
-    reason_for_final_outcome: Literal["ALL", "29", "1", "2", "30", "3", "4", "27", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"] = Field("ALL", description="Main reason for decision outcome."),
-    basis_constitution_article_numbers: List[str] = Field(default_factory=list, description="List of supporting Constitution article numbers."),
-    results_per_page: int = Field(10, description="Results per page (10, 20, 30, 40, 50)."),
-    page_to_fetch: int = Field(1, ge=1, description="Page number to fetch."),
-    sort_by_criteria: str = Field("KararTarihi", description="Sort criteria ('KararTarihi', 'YayinTarihi', 'Toplam').")
+    keywords_all: List[str] = Field(default_factory=list, description="AND keywords"),
+    keywords_any: List[str] = Field(default_factory=list, description="OR keywords"),
+    keywords_exclude: List[str] = Field(default_factory=list, description="Exclude keywords"),
+    period: Literal["ALL", "1", "2"] = Field("ALL", description="Period"),
+    case_number_esas: Optional[str] = Field(None, description="Case number"),
+    decision_number_karar: Optional[str] = Field(None, description="Decision number"),
+    first_review_date_start: Optional[str] = Field(None, description="Review start date"),
+    first_review_date_end: Optional[str] = Field(None, description="Review end date"),
+    decision_date_start: Optional[str] = Field(None, description="Decision start"),
+    decision_date_end: Optional[str] = Field(None, description="Decision end"),
+    application_type: Literal["ALL", "1", "2", "3"] = Field("ALL", description="App type"),
+    applicant_general_name: Optional[str] = Field(None, description="Applicant"),
+    applicant_specific_name: Optional[str] = Field(None, description="Specific name"),
+    official_gazette_date_start: Optional[str] = Field(None, description="Gazette start"),
+    official_gazette_date_end: Optional[str] = Field(None, description="Gazette end"),
+    official_gazette_number_start: Optional[str] = Field(None, description="Gazette no start"),
+    official_gazette_number_end: Optional[str] = Field(None, description="Gazette no end"),
+    has_press_release: Literal["ALL", "0", "1"] = Field("ALL", description="Press release"),
+    has_dissenting_opinion: Literal["ALL", "0", "1"] = Field("ALL", description="Dissenting"),
+    has_different_reasoning: Literal["ALL", "0", "1"] = Field("ALL", description="Different reason"),
+    attending_members_names: List[str] = Field(default_factory=list, description="Members"),
+    rapporteur_name: Optional[str] = Field(None, description="Rapporteur"),
+    norm_type: Literal["ALL", "1", "2", "14", "3", "4", "5", "6", "7", "8", "9", "10", "11", "12", "0", "13"] = Field("ALL", description="Norm type"),
+    norm_id_or_name: Optional[str] = Field(None, description="Norm name"),
+    norm_article: Optional[str] = Field(None, description="Article"),
+    review_outcomes: List[Literal["ALL", "1", "2", "3", "4", "5", "6", "7", "8", "12"]] = Field(default_factory=list, description="Outcomes"),
+    reason_for_final_outcome: Literal["ALL", "29", "1", "2", "30", "3", "4", "27", "5", "6", "7", "8", "9", "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20", "21", "22", "23", "24", "25", "26"] = Field("ALL", description="Reason"),
+    basis_constitution_article_numbers: List[str] = Field(default_factory=list, description="Articles"),
+    results_per_page: int = Field(10, description="Count"),
+    page_to_fetch: int = Field(1, ge=1, description="Page"),
+    sort_by_criteria: str = Field("KararTarihi", description="Sort")
 ) -> AnayasaSearchResult:
-    """
-    Searches Constitutional Court (Anayasa Mahkemesi) norm control decisions with comprehensive filtering.
-    
-    The Constitutional Court is Turkey's highest constitutional authority, responsible for judicial
-    review of laws, regulations, and constitutional amendments. Norm control (Norm Denetimi) is the
-    court's power to review the constitutionality of legal norms.
-    
-    Key Features:
-    • Boolean keyword search (AND, OR, NOT logic)
-    • Constitutional period filtering (1961 vs 1982 Constitution)
-    • Case and decision number filtering
-    • Date range filtering for review and decision dates
-    • Application type classification (İptal, İtiraz, etc.)
-    • Applicant filtering (government entities, opposition parties)
-    • Official Gazette publication filtering
-    • Judicial opinion analysis (dissents, different reasoning)
-    • Court member and rapporteur filtering
-    • Norm type classification (laws, regulations, decrees)
-    • Review outcome filtering (constitutionality determinations)
-    • Constitutional basis article referencing
-    
-    Constitutional Review Types:
-    • Abstract review: Ex ante constitutional control
-    • Concrete review: Constitutional questions during litigation
-    • Legislative review: Parliamentary acts and government decrees
-    • Regulatory review: Administrative regulations and bylaws
-    
-    Advanced Research Capabilities:
-    • Track constitutional interpretation evolution
-    • Analyze court composition effects on decisions
-    • Study dissenting opinion patterns
-    • Research specific constitutional provisions
-    • Monitor judicial review trends over time
-    
-    Use cases:
-    • Constitutional law research and analysis
-    • Legislative drafting constitutional compliance
-    • Academic constitutional law study
-    • Legal precedent analysis for constitutional questions
-    • Government policy constitutional assessment
-    
-    Returns structured constitutional court data with comprehensive metadata.
-    Use get_anayasa_norm_denetimi_document_markdown() for full decision texts (paginated).
-    """
+    """Search Constitutional Court norm control decisions with comprehensive filtering."""
     
     # Convert string literals to enums
     period_enum = AnayasaDonemEnum(period)
@@ -976,7 +1423,7 @@ async def search_anayasa_norm_denetimi_decisions(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a Constitutional Court norm control decision in paginated Markdown format",
+    description="Retrieve full text of a Constitutional Court norm control decision in paginated Markdown format. Before using, read docs://tools/constitutional_court",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -986,38 +1433,7 @@ async def get_anayasa_norm_denetimi_document_markdown(
     document_url: str = Field(..., description="The URL path (e.g., /ND/YYYY/NN) or full https URL of the AYM Norm Denetimi decision from normkararlarbilgibankasi.anayasa.gov.tr."),
     page_number: Optional[int] = Field(1, ge=1, description="Page number for paginated Markdown content (1-indexed, accepts int). Default is 1 (first 5,000 characters).")
 ) -> AnayasaDocumentMarkdown:
-    """
-    Retrieves the full text of a Constitutional Court norm control decision in paginated Markdown format.
-    
-    This tool fetches complete constitutional court decisions on norm control (judicial review)
-    and converts them to clean, readable Markdown format. Due to the length of constitutional
-    decisions, content is paginated into 5,000-character chunks.
-    
-    Input Requirements:
-    • document_url: URL path (e.g., /ND/YYYY/NN) from search_anayasa_norm_denetimi_decisions results
-    • page_number: Page number for pagination (1-indexed, default: 1)
-    
-    Output Format:
-    • Clean Markdown text with constitutional legal structure preserved
-    • Organized sections: case summary, constitutional analysis, ruling
-    • Proper formatting for constitutional law citations and references
-    • Paginated content with navigation information
-    
-    Constitutional Decision Content:
-    • Complete constitutional analysis and judicial review reasoning
-    • Detailed examination of constitutional provisions
-    • Citation of constitutional articles and legal principles
-    • Final constitutionality determination with justification
-    • Analysis of legislative intent vs constitutional requirements
-    • Dissenting and concurring opinions when available
-    
-    Use for:
-    • Reading full constitutional court decisions
-    • Constitutional law research and precedent analysis
-    • Understanding judicial review standards and methodology
-    • Academic constitutional law study
-    • Legislative drafting constitutional compliance guidance
-    """
+    """Get Constitutional Court norm control decision as paginated Markdown."""
     logger.info(f"Tool 'get_anayasa_norm_denetimi_document_markdown' called for URL: {document_url}, Page: {page_number}")
     if not document_url or not document_url.strip():
         raise ValueError("Document URL is required for Anayasa Norm Denetimi document retrieval.")
@@ -1030,7 +1446,7 @@ async def get_anayasa_norm_denetimi_document_markdown(
 
 # --- MCP Tools for Anayasa Mahkemesi (Bireysel Başvuru Karar Raporu & Belgeler) ---
 @app.tool(
-    description="Search Constitutional Court individual application (Bireysel Başvuru) decisions for human rights violation reports with keyword filtering",
+    description="Search Constitutional Court individual application decisions for human rights violation reports. Before using, read docs://tools/constitutional_court",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1041,47 +1457,7 @@ async def search_anayasa_bireysel_basvuru_report(
     keywords: List[str] = Field(default_factory=list, description="Keywords for AND logic."),
     page_to_fetch: int = Field(1, ge=1, description="Page number to fetch for the report. Default is 1.")
 ) -> AnayasaBireyselReportSearchResult:
-    """
-    Searches Constitutional Court individual application (Bireysel Başvuru) decisions for human rights reports.
-    
-    Individual applications allow citizens to petition the Constitutional Court directly for
-    violations of fundamental rights and freedoms. This tool generates decision search reports
-    that help identify relevant human rights violation cases.
-    
-    Key Features:
-    • Keyword-based search with AND logic
-    • Human rights violation case identification
-    • Individual petition decision analysis
-    • Fundamental rights and freedoms research
-    • Pagination support for large result sets
-    
-    Individual Application System:
-    • Direct citizen access to Constitutional Court
-    • Human rights and fundamental freedoms protection
-    • Alternative to European Court of Human Rights
-    • Domestic remedy for constitutional violations
-    • Individual justice and rights enforcement
-    
-    Human Rights Categories:
-    • Right to life and personal liberty
-    • Right to fair trial and due process
-    • Freedom of expression and press
-    • Freedom of religion and conscience
-    • Property rights and economic freedoms
-    • Right to privacy and family life
-    • Political rights and democratic participation
-    
-    Use cases:
-    • Human rights violation research
-    • Individual petition precedent analysis
-    • Constitutional rights interpretation study
-    • Legal remedies for rights violations
-    • Academic human rights law research
-    • Civil society and NGO legal research
-    
-    Returns search report with case summaries and violation categories.
-    Use get_anayasa_bireysel_basvuru_document_markdown() for full decision texts.
-    """
+    """Search Constitutional Court individual application decisions."""
     
     search_query = AnayasaBireyselReportSearchRequest(
         keywords=keywords,
@@ -1096,7 +1472,7 @@ async def search_anayasa_bireysel_basvuru_report(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a Constitutional Court individual application decision in paginated Markdown format",
+    description="Parameter description",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -1106,39 +1482,7 @@ async def get_anayasa_bireysel_basvuru_document_markdown(
     document_url_path: str = Field(..., description="The URL path (e.g., /BB/YYYY/NNNN) of the AYM Bireysel Başvuru decision from kararlarbilgibankasi.anayasa.gov.tr."),
     page_number: Union[int, str] = Field(1, description="Page number for paginated Markdown content (1-indexed, accepts int). Default is 1 (first 5,000 characters).")
 ) -> AnayasaBireyselBasvuruDocumentMarkdown:
-    """
-    Retrieves the full text of a Constitutional Court individual application decision in paginated Markdown format.
-    
-    This tool fetches complete human rights violation decisions from individual applications
-    and converts them to clean, readable Markdown format. Content is paginated into
-    5,000-character chunks for easier processing.
-    
-    Input Requirements:
-    • document_url_path: URL path (e.g., /BB/YYYY/NNNN) from search results
-    • page_number: Page number for pagination (1-indexed, default: 1)
-    
-    Output Format:
-    • Clean Markdown text with human rights case structure preserved
-    • Organized sections: applicant info, violation claims, court analysis, ruling
-    • Proper formatting for human rights law citations and references
-    • Paginated content with navigation information
-    
-    Individual Application Decision Content:
-    • Complete human rights violation analysis
-    • Detailed examination of fundamental rights claims
-    • Citation of constitutional articles and international human rights law
-    • Final determination on rights violations with remedies
-    • Analysis of domestic court proceedings and their adequacy
-    • Individual remedy recommendations and compensation
-    
-    Use for:
-    • Reading full human rights violation decisions
-    • Human rights law research and precedent analysis
-    • Understanding constitutional rights protection standards
-    • Individual petition strategy development
-    • Academic human rights and constitutional law study
-    • Civil society monitoring of rights violations
-    """
+    """Get Constitutional Court individual application decision as paginated Markdown."""
     logger.info(f"Tool 'get_anayasa_bireysel_basvuru_document_markdown' called for URL path: {document_url_path}, Page: {page_number}")
     if not document_url_path or not document_url_path.strip() or not document_url_path.startswith("/BB/"):
         raise ValueError("Document URL path (e.g., /BB/YYYY/NNNN) is required for Anayasa Bireysel Başvuru document retrieval.")
@@ -1158,7 +1502,7 @@ async def get_anayasa_bireysel_basvuru_document_markdown(
 
 # --- MCP Tools for KIK (Kamu İhale Kurulu) ---
 @app.tool(
-    description="Search Public Procurement Authority (Kamu İhale Kurulu - KIK) decisions with comprehensive filtering for public procurement law and administrative dispute research",
+    description="Search Public Procurement Authority (KİK) decisions for procurement law and administrative disputes. Before using, read docs://tools/kik",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1175,8 +1519,8 @@ async def search_kik_decisions(
     basvuru_konusu_ihale: Optional[str] = Field(None, description="Tender subject of the application."),
     karar_metni: Optional[str] = Field(None, description="""
         Keyword/phrase in decision text. Advanced search operators supported:
-        • word1+word2 = AND logic (+anayasa +mahkeme → both words required)
-        • +"required" -"excluded" = Include and exclude (+ihale -"iptal")
+        - word1+word2 = AND logic (+anayasa +mahkeme -> both words required)
+        - +"required" -"excluded" = Include and exclude (+ihale -"iptal")
         Examples: anayasa | +anayasa +mahkeme | +ihale -"iptal"
     """),
     yil: Optional[str] = Field(None, description="Year of the decision."),
@@ -1184,45 +1528,7 @@ async def search_kik_decisions(
     resmi_gazete_sayisi: Optional[str] = Field(None, description="Official Gazette Number."),
     page: int = Field(1, ge=1, description="Results page number.")
 ) -> KikSearchResult:
-    """
-    Searches Public Procurement Authority (Kamu İhale Kurulu - KIK) decisions with comprehensive filtering.
-    
-    The Public Procurement Authority (KIK) is Turkey's public procurement regulatory authority, responsible for overseeing
-    government procurement processes and resolving procurement-related disputes. This tool
-    provides access to official procurement decisions and regulatory interpretations.
-    
-    Key Features:
-    • Decision type filtering (Disputes, Regulatory, Court decisions)
-    • Decision number and date range filtering
-    • Applicant and procuring entity filtering
-    • Tender subject and content-based search
-    • Official Gazette publication tracking
-    • Pagination support for large result sets
-    
-    Decision Types:
-    • rbUyusmazlik: Procurement dispute resolutions
-    • rbDuzenleyici: Regulatory and interpretive decisions
-    • rbMahkeme: Court-related procurement decisions
-    
-    Public Procurement Law Areas:
-    • Tender procedure disputes and violations
-    • Bid evaluation and award challenges
-    • Procurement regulation interpretations
-    • Contract performance and compliance issues
-    • Vendor qualification and exclusion decisions
-    • Emergency procurement and exceptions
-    
-    Use cases:
-    • Public procurement law research
-    • Tender dispute precedent analysis
-    • Government contracting compliance guidance
-    • Procurement policy and regulation study
-    • Vendor rights and remedies research
-    • Academic public administration law study
-    
-    Returns structured procurement decision data with comprehensive metadata.
-    Use get_kik_document_markdown() for full decision texts (paginated).
-    """
+    """Search Public Procurement Authority (KIK) decisions."""
     
     # Convert string literal to enum
     karar_tipi_enum = KikKararTipi(karar_tipi)
@@ -1255,7 +1561,7 @@ async def search_kik_decisions(
         return KikSearchResult(decisions=[], total_records=0, current_page=current_page_val)
 
 @app.tool(
-    description="Retrieve the full text of a Public Procurement Authority (KIK) decision in paginated Markdown format",
+    description="Retrieve full text of a Public Procurement Authority (KİK) decision in paginated Markdown format. Before using, read docs://tools/kik",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -1265,38 +1571,7 @@ async def get_kik_document_markdown(
     karar_id: str = Field(..., description="The Base64 encoded KIK decision identifier."),
     page_number: Optional[int] = Field(1, ge=1, description="Page number for paginated Markdown content (1-indexed, accepts int). Default is 1.")
 ) -> KikDocumentMarkdown:
-    """
-    Retrieves the full text of a KIK (Public Procurement Authority) decision in paginated Markdown format.
-    
-    This tool fetches complete public procurement authority decisions and converts them to clean,
-    readable Markdown format. Content is paginated into manageable chunks for easier processing.
-    
-    Input Requirements:
-    • karar_id: Base64 encoded decision identifier from search_kik_decisions results
-    • page_number: Page number for pagination (1-indexed, default: 1)
-    
-    Output Format:
-    • Clean Markdown text with procurement decision structure preserved
-    • Organized sections: case info, procurement facts, legal analysis, ruling
-    • Proper formatting for procurement law citations and references
-    • Paginated content with navigation information
-    
-    Public Procurement Decision Content:
-    • Complete procurement dispute analysis and resolution
-    • Detailed examination of tender procedures and compliance
-    • Citation of procurement laws, regulations, and guidelines
-    • Final determination on procurement disputes with remedies
-    • Analysis of bid evaluation and award processes
-    • Regulatory interpretations and policy guidance
-    
-    Use for:
-    • Reading full public procurement authority decisions
-    • Procurement law research and precedent analysis
-    • Understanding tender dispute resolution standards
-    • Government contracting compliance guidance
-    • Academic public administration and procurement law study
-    • Vendor legal strategy and rights enforcement
-    """
+    """Get KIK decision as paginated Markdown."""
     logger.info(f"Tool 'get_kik_document_markdown' called for KIK karar_id: {karar_id}, Markdown Page: {page_number}")
     
     if not karar_id or not karar_id.strip():
@@ -1326,7 +1601,7 @@ async def get_kik_document_markdown(
             is_paginated=False
         )
 @app.tool(
-    description="Search Competition Authority (Rekabet Kurumu) decisions with comprehensive filtering for competition law and antitrust research",
+    description="Search Competition Authority (Rekabet Kurumu) decisions for competition law and antitrust research. Before using, read docs://tools/rekabet",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1347,60 +1622,12 @@ async def search_rekabet_kurumu_decisions(
         "Menfi Tespit ve Muafiyet",
         "Özelleştirme",
         "Rekabet İhlali"
-    ] = Field("ALL", description="Decision type (Karar Türü). Use 'ALL' for all types. Options: 'ALL', 'Birleşme ve Devralma', 'Diğer', 'Menfi Tespit ve Muafiyet', 'Özelleştirme', 'Rekabet İhlali'."),
+    ] = Field("ALL", description="Parameter description"),
     KararSayisi: Optional[str] = Field(None, description="Decision number (Karar Sayısı)."),
     KararTarihi: Optional[str] = Field(None, description="Decision date (Karar Tarihi), e.g., DD.MM.YYYY."),
     page: int = Field(1, ge=1, description="Page number to fetch for the results list.")
 ) -> RekabetSearchResult:
-    """
-    Searches Competition Authority (Rekabet Kurumu) decisions with comprehensive filtering.
-    
-    The Competition Authority (Rekabet Kurumu) is Turkey's competition authority, responsible for enforcing antitrust laws,
-    preventing anti-competitive practices, and regulating mergers and acquisitions. This tool
-    provides access to official competition law decisions and regulatory interpretations.
-    
-    Key Features:
-    • Decision type filtering (Mergers, Violations, Exemptions, etc.)
-    • Title and content-based text search with exact phrase matching
-    • Publication date filtering
-    • Case year and decision number filtering
-    • Pagination support for large result sets
-    
-    Competition Law Decision Types:
-    • Birleşme ve Devralma: Merger and acquisition approvals
-    • Rekabet İhlali: Competition violation investigations
-    • Muafiyet: Exemption and negative clearance decisions
-    • Geçici Tedbir: Interim measures and emergency orders
-    • Sektör İncelemesi: Sector inquiry and market studies
-    • Diğer: Other regulatory and interpretive decisions
-    
-    Competition Law Areas:
-    • Anti-competitive agreements and cartels
-    • Abuse of dominant market position
-    • Merger control and market concentration
-    • Vertical agreements and distribution restrictions
-    • Unfair competition and consumer protection
-    • Market definition and economic analysis
-    
-    Advanced Search:
-    • Exact phrase matching with double quotes for precise legal terms
-    • Content search across full decision texts (PdfText parameter)
-    • Title search for specific case names or topics
-    • Date range filtering for temporal analysis
-    
-    Example for exact phrase search: PdfText="\\"tender process\\" consultancy"
-    
-    Use cases:
-    • Competition law research and precedent analysis
-    • Merger and acquisition due diligence
-    • Antitrust compliance and risk assessment
-    • Market analysis and competitive intelligence
-    • Academic competition economics study
-    • Legal strategy development for competition cases
-    
-    Returns structured competition authority data with comprehensive metadata.
-    Use get_rekabet_kurumu_document() for full decision texts (paginated PDF conversion).
-    """
+    """Search Competition Authority decisions."""
     
     karar_turu_guid_enum = KARAR_TURU_ADI_TO_GUID_ENUM_MAP.get(KararTuru)
 
@@ -1430,7 +1657,7 @@ async def search_rekabet_kurumu_decisions(
         return RekabetSearchResult(decisions=[], retrieved_page_number=page, total_records_found=0, total_pages=0)
 
 @app.tool(
-    description="Retrieve the full text of a Competition Authority (Rekabet Kurumu) decision in paginated Markdown format converted from PDF",
+    description="Retrieve full text of a Competition Authority decision in paginated Markdown format. Before using, read docs://tools/rekabet",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -1440,40 +1667,7 @@ async def get_rekabet_kurumu_document(
     karar_id: str = Field(..., description="GUID (kararId) of the Rekabet Kurumu decision. This ID is obtained from search results."),
     page_number: Optional[int] = Field(1, ge=1, description="Requested page number for the Markdown content converted from PDF (1-indexed, accepts int). Default is 1.")
 ) -> RekabetDocument:
-    """
-    Retrieves the full text of a Turkish Competition Authority decision in paginated Markdown format.
-    
-    This tool fetches complete competition authority decisions and converts them from PDF to clean,
-    readable Markdown format. Content is paginated for easier processing of lengthy competition law decisions.
-    
-    Input Requirements:
-    • karar_id: GUID (kararId) from search_rekabet_kurumu_decisions results
-    • page_number: Page number for pagination (1-indexed, default: 1)
-    
-    Output Format:
-    • Clean Markdown text converted from original PDF documents
-    • Organized sections: case summary, market analysis, legal reasoning, decision
-    • Proper formatting for competition law citations and references
-    • Paginated content with navigation information
-    • Metadata including PDF source link and document information
-    
-    Competition Authority Decision Content:
-    • Complete competition law analysis and market assessment
-    • Detailed examination of anti-competitive practices
-    • Economic analysis and market definition studies
-    • Citation of competition laws, regulations, and precedents
-    • Final determination on competition violations with remedies
-    • Merger and acquisition approval conditions
-    • Regulatory guidance and policy interpretations
-    
-    Use for:
-    • Reading full competition authority decisions
-    • Competition law research and precedent analysis
-    • Market analysis and economic impact assessment
-    • Antitrust compliance and risk evaluation
-    • Academic competition economics and law study
-    • Legal strategy development for competition cases
-    """
+    """Get Competition Authority decision as paginated Markdown."""
     logger.info(f"Tool 'get_rekabet_kurumu_document' called. Karar ID: {karar_id}, Markdown Page: {page_number}")
     
     current_page_to_fetch = page_number if page_number is not None and page_number >= 1 else 1
@@ -1487,7 +1681,7 @@ async def get_rekabet_kurumu_document(
 
 # --- MCP Tools for Bedesten (Alternative Yargitay Search) ---
 @app.tool(
-    description="Search Court of Cassation (Yargıtay) decisions using the Bedesten API - an alternative data source that complements the primary Court of Cassation API. This tool provides access to recent decisions with advanced filtering capabilities including chamber selection, date ranges, and exact phrase matching. Use this alongside search_yargitay_detailed for comprehensive coverage.",
+    description="Search Yargıtay decisions using Bedesten API with chamber selection and date filtering. Before using, read docs://tools/yargitay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1495,47 +1689,14 @@ async def get_rekabet_kurumu_document(
     }
 )
 async def search_yargitay_bedesten(
-    phrase: str = Field(..., description="""
-        Aranacak kavram/kelime. Gelişmiş arama operatörleri desteklenir:
-        • Space between words = OR logic (mülkiyet hakkı → "mülkiyet" OR "hakkı")
-        • "exact phrase" = Exact match ("mülkiyet hakkı" → exact phrase)
-        • word1+word2 = AND logic (+mülkiyet +hakkı → both words required)
-        • +"phrase1" +"phrase2" = Multiple required phrases
-        • +"required" -"excluded" = Include and exclude
-        Examples: mülkiyet hakkı | "mülkiyet hakkı" | +mülkiyet +hakkı | +"mülkiyet hakkı" +"anayasa" | +mülkiyet -"kira"
-    """),
+    phrase: str = Field(..., description="Search phrase with advanced operators"),
     pageSize: int = Field(10, ge=1, le=100, description="Sayfa başına sonuç sayısı"),
     pageNumber: int = Field(1, ge=1, description="Sayfa numarası"),
-    birimAdi: Optional[YargitayBirimEnum] = Field(None, description="""
-        Yargıtay chamber/board filter (optional). Available options:
-        • None for ALL chambers  
-        • 'Hukuk Genel Kurulu' (Civil General Assembly)
-        • '1. Hukuk Dairesi' through '23. Hukuk Dairesi' (Civil Chambers 1-23)
-        • 'Hukuk Daireleri Başkanlar Kurulu' (Civil Chambers Presidents Board)
-        • 'Ceza Genel Kurulu' (Criminal General Assembly)
-        • '1. Ceza Dairesi' through '23. Ceza Dairesi' (Criminal Chambers 1-23)  
-        • 'Ceza Daireleri Başkanlar Kurulu' (Criminal Chambers Presidents Board)
-        • 'Büyük Genel Kurulu' (Grand General Assembly)
-        Total: 49 chamber options
-    """),
-    kararTarihiStart: Optional[str] = Field(None, description="""
-        Decision start date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-01-01T00:00:00.000Z" for decisions from Jan 1, 2024
-        Use with kararTarihiEnd for date range filtering
-    """),
-    kararTarihiEnd: Optional[str] = Field(None, description="""
-        Decision end date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-12-31T23:59:59.999Z" for decisions until Dec 31, 2024
-        Use with kararTarihiStart for date range filtering
-    """)
+    birimAdi: Optional[YargitayBirimEnum] = Field(None, description="See docs for details"),
+    kararTarihiStart: Optional[str] = Field(None, description="Start date for filtering (ISO 8601 format)"),
+    kararTarihiEnd: Optional[str] = Field(None, description="End date for filtering (ISO 8601 format)")
 ) -> dict:
-    """
-    Searches Yargıtay decisions using Bedesten API (alternative source).
-    This complements search_yargitay_detailed for comprehensive coverage.
-    Always use BOTH Yargıtay search tools for complete results.
-    
-    Returns a simplified response with decision list and metadata.
-    """
+    """Search function for legal decisions."""
     search_data = BedestenSearchData(
         pageSize=pageSize,
         pageNumber=pageNumber,
@@ -1575,7 +1736,7 @@ async def search_yargitay_bedesten(
         raise
 
 @app.tool(
-    description="Retrieve a specific Yargıtay decision document from the Bedesten API and convert it to Markdown format. This tool takes a documentId obtained from search results and fetches the full decision text, supporting both HTML and PDF source documents. The content is automatically converted to readable Markdown format for easy analysis.",
+    description="Retrieve Yargıtay decision document from Bedesten API in Markdown format. Before using, read docs://tools/yargitay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1585,11 +1746,7 @@ async def search_yargitay_bedesten(
 async def get_yargitay_bedesten_document_markdown(
     documentId: str = Field(..., description="Document ID from Bedesten search results")
 ) -> BedestenDocumentMarkdown:
-    """
-    Retrieves a Yargıtay decision document from Bedesten API and converts to Markdown.
-    Supports both HTML and PDF content types.
-    Use documentId from search_yargitay_bedesten results.
-    """
+    """Get document as Markdown."""
     logger.info(f"Tool 'get_yargitay_bedesten_document_markdown' called for ID: {documentId}")
     
     if not documentId or not documentId.strip():
@@ -1603,7 +1760,7 @@ async def get_yargitay_bedesten_document_markdown(
 
 # --- MCP Tools for Bedesten (Alternative Danıştay Search) ---
 @app.tool(
-    description="Search Council of State (Danıştay) decisions using the Bedesten API - a powerful alternative data source. This tool provides access to administrative court decisions with comprehensive filtering options including chamber (daire) selection (27 options), date ranges, and exact phrase matching. Use this alongside search_danistay_by_keyword and search_danistay_detailed for complete coverage of administrative law decisions.",
+    description="Search Danıştay decisions using Bedesten API with chamber selection and date filtering. Before using, read docs://tools/danistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1611,44 +1768,14 @@ async def get_yargitay_bedesten_document_markdown(
     }
 )
 async def search_danistay_bedesten(
-    phrase: str = Field(..., description="""
-        Aranacak kavram/kelime. Gelişmiş arama operatörleri desteklenir:
-        • Space between words = OR logic (mülkiyet hakkı → "mülkiyet" OR "hakkı")
-        • "exact phrase" = Exact match ("mülkiyet hakkı" → exact phrase)
-        • word1+word2 = AND logic (+mülkiyet +hakkı → both words required)
-        • +"phrase1" +"phrase2" = Multiple required phrases
-        • +"required" -"excluded" = Include and exclude
-        Examples: mülkiyet hakkı | "mülkiyet hakkı" | +mülkiyet +hakkı | +"mülkiyet hakkı" +"anayasa" | +mülkiyet -"kira"
-    """),
+    phrase: str = Field(..., description="Search phrase with advanced operators"),
     pageSize: int = Field(10, ge=1, le=100, description="Sayfa başına sonuç sayısı"),
     pageNumber: int = Field(1, ge=1, description="Sayfa numarası"),
-    birimAdi: Optional[DanistayBirimEnum] = Field(None, description="""
-        Danıştay chamber/board filter (optional). Available options:
-        • None for ALL chambers
-        • Main Councils: 'Büyük Gen.Kur.', 'İdare Dava Daireleri Kurulu', 'Vergi Dava Daireleri Kurulu'
-        • Chambers: '1. Daire' through '17. Daire' (17 administrative chambers)
-        • Special Councils: 'İçtihatları Birleştirme Kurulu', 'İdari İşler Kurulu', 'Başkanlar Kurulu'
-        • Military: 'Askeri Yüksek İdare Mahkemesi' and its chambers/councils
-        Total: 27 chamber options
-    """),
-    kararTarihiStart: Optional[str] = Field(None, description="""
-        Decision start date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-01-01T00:00:00.000Z" for decisions from Jan 1, 2024
-        Use with kararTarihiEnd for date range filtering
-    """),
-    kararTarihiEnd: Optional[str] = Field(None, description="""
-        Decision end date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-12-31T23:59:59.999Z" for decisions until Dec 31, 2024
-        Use with kararTarihiStart for date range filtering
-    """)
+    birimAdi: Optional[DanistayBirimEnum] = Field(None, description="See docs for details"),
+    kararTarihiStart: Optional[str] = Field(None, description="Start date for filtering (ISO 8601 format)"),
+    kararTarihiEnd: Optional[str] = Field(None, description="End date for filtering (ISO 8601 format)")
 ) -> dict:
-    """
-    Searches Danıştay decisions using Bedesten API (alternative source).
-    This complements existing Danıştay search tools (search_danistay_by_keyword, search_danistay_detailed) 
-    for comprehensive coverage. Always use ALL Danıştay search tools for complete results.
-    
-    Returns a simplified response with decision list and metadata.
-    """
+    """Search function for legal decisions."""
     search_data = BedestenSearchData(
         pageSize=pageSize,
         pageNumber=pageNumber,
@@ -1688,7 +1815,7 @@ async def search_danistay_bedesten(
         raise
 
 @app.tool(
-    description="Retrieve a specific Danıştay decision document from the Bedesten API and convert it to Markdown format. This tool fetches the complete administrative court decision text using a documentId from search results. It handles both HTML and PDF source documents and converts them to structured Markdown for easy reading and analysis.",
+    description="Retrieve Danıştay decision document from Bedesten API in Markdown format. Before using, read docs://tools/danistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1698,11 +1825,7 @@ async def search_danistay_bedesten(
 async def get_danistay_bedesten_document_markdown(
     documentId: str = Field(..., description="Document ID from Bedesten search results")
 ) -> BedestenDocumentMarkdown:
-    """
-    Retrieves a Danıştay decision document from Bedesten API and converts to Markdown.
-    Supports both HTML and PDF content types.
-    Use documentId from search_danistay_bedesten results.
-    """
+    """Get document as Markdown."""
     logger.info(f"Tool 'get_danistay_bedesten_document_markdown' called for ID: {documentId}")
     
     if not documentId or not documentId.strip():
@@ -1716,7 +1839,7 @@ async def get_danistay_bedesten_document_markdown(
 
 # --- MCP Tools for Bedesten (Yerel Hukuk Mahkemesi Search) ---
 @app.tool(
-    description="Search Local Civil Courts (Yerel Hukuk Mahkemeleri) decisions using the Bedesten API. This is the primary and only available tool for accessing local court decisions, which represent the first instance of civil litigation in Turkey. Supports advanced search features including date filtering and exact phrase matching for precise legal research.",
+    description="Search Local Civil Courts (Yerel Hukuk Mahkemeleri) decisions using Bedesten API. Before using, read docs://tools/bedesten_api_courts",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1724,35 +1847,13 @@ async def get_danistay_bedesten_document_markdown(
     }
 )
 async def search_yerel_hukuk_bedesten(
-    phrase: str = Field(..., description="""
-        Aranacak kavram/kelime. Gelişmiş arama operatörleri desteklenir:
-        • Space between words = OR logic (mülkiyet hakkı → "mülkiyet" OR "hakkı")
-        • "exact phrase" = Exact match ("mülkiyet hakkı" → exact phrase)
-        • word1+word2 = AND logic (+mülkiyet +hakkı → both words required)
-        • +"phrase1" +"phrase2" = Multiple required phrases
-        • +"required" -"excluded" = Include and exclude
-        Examples: mülkiyet hakkı | "mülkiyet hakkı" | +mülkiyet +hakkı | +"mülkiyet hakkı" +"anayasa" | +mülkiyet -"kira"
-    """),
+    phrase: str = Field(..., description="Search phrase with advanced operators"),
     pageSize: int = Field(10, ge=1, le=100, description="Sayfa başına sonuç sayısı"),
     pageNumber: int = Field(1, ge=1, description="Sayfa numarası"),
-    kararTarihiStart: Optional[str] = Field(None, description="""
-        Decision start date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-01-01T00:00:00.000Z" for decisions from Jan 1, 2024
-        Use with kararTarihiEnd for date range filtering
-    """),
-    kararTarihiEnd: Optional[str] = Field(None, description="""
-        Decision end date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-12-31T23:59:59.999Z" for decisions until Dec 31, 2024
-        Use with kararTarihiStart for date range filtering
-    """)
+    kararTarihiStart: Optional[str] = Field(None, description="Start date for filtering (ISO 8601 format)"),
+    kararTarihiEnd: Optional[str] = Field(None, description="End date for filtering (ISO 8601 format)")
 ) -> dict:
-    """
-    Searches Yerel Hukuk Mahkemesi (Local Civil Court) decisions using Bedesten API.
-    This provides access to local court decisions that are not available through other APIs.
-    Currently the only available tool for searching Yerel Hukuk Mahkemesi decisions.
-    
-    Returns a simplified response with decision list and metadata.
-    """
+    """Search Local Civil Court decisions using Bedesten API."""
     search_data = BedestenSearchData(
         pageSize=pageSize,
         pageNumber=pageNumber,
@@ -1791,7 +1892,7 @@ async def search_yerel_hukuk_bedesten(
         raise
 
 @app.tool(
-    description="Retrieve a specific local civil court decision document from the Bedesten API and convert it to readable Markdown format. This tool fetches complete local court decision texts using documentId from search results. Perfect for detailed analysis of first-instance civil court rulings.",
+    description="Retrieve local civil court decision document from Bedesten API in Markdown format. Before using, read docs://tools/bedesten_api_courts",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1801,11 +1902,7 @@ async def search_yerel_hukuk_bedesten(
 async def get_yerel_hukuk_bedesten_document_markdown(
     documentId: str = Field(..., description="Document ID from Bedesten search results")
 ) -> BedestenDocumentMarkdown:
-    """
-    Retrieves a Yerel Hukuk Mahkemesi decision document from Bedesten API and converts to Markdown.
-    Supports both HTML and PDF content types.
-    Use documentId from search_yerel_hukuk_bedesten results.
-    """
+    """Get Local Civil Court decision as Markdown."""
     logger.info(f"Tool 'get_yerel_hukuk_bedesten_document_markdown' called for ID: {documentId}")
     
     if not documentId or not documentId.strip():
@@ -1819,7 +1916,7 @@ async def get_yerel_hukuk_bedesten_document_markdown(
 
 # --- MCP Tools for Bedesten (İstinaf Hukuk Mahkemesi Search) ---
 @app.tool(
-    description="Search Civil Courts of Appeals (İstinaf Hukuk Mahkemeleri) decisions using Bedesten API with advanced filtering options including date range and exact phrase search capabilities",
+    description="Search Civil Courts of Appeals (İstinaf Hukuk Mahkemeleri) decisions using Bedesten API. Before using, read docs://tools/bedesten_api_courts",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1827,50 +1924,13 @@ async def get_yerel_hukuk_bedesten_document_markdown(
     }
 )
 async def search_istinaf_hukuk_bedesten(
-    phrase: str = Field(..., description="""
-        Aranacak kavram/kelime. Gelişmiş arama operatörleri desteklenir:
-        • Space between words = OR logic (mülkiyet hakkı → "mülkiyet" OR "hakkı")
-        • "exact phrase" = Exact match ("mülkiyet hakkı" → exact phrase)
-        • word1+word2 = AND logic (+mülkiyet +hakkı → both words required)
-        • +"phrase1" +"phrase2" = Multiple required phrases
-        • +"required" -"excluded" = Include and exclude
-        Examples: mülkiyet hakkı | "mülkiyet hakkı" | +mülkiyet +hakkı | +"mülkiyet hakkı" +"anayasa" | +mülkiyet -"kira"
-    """),
+    phrase: str = Field(..., description="Search phrase with advanced operators"),
     pageSize: int = Field(10, ge=1, le=100, description="Sayfa başına sonuç sayısı"),
     pageNumber: int = Field(1, ge=1, description="Sayfa numarası"),
-    kararTarihiStart: Optional[str] = Field(None, description="""
-        Decision start date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-01-01T00:00:00.000Z" for decisions from Jan 1, 2024
-        Use with kararTarihiEnd for date range filtering
-    """),
-    kararTarihiEnd: Optional[str] = Field(None, description="""
-        Decision end date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-12-31T23:59:59.999Z" for decisions until Dec 31, 2024
-        Use with kararTarihiStart for date range filtering
-    """)
+    kararTarihiStart: Optional[str] = Field(None, description="Start date for filtering (ISO 8601 format)"),
+    kararTarihiEnd: Optional[str] = Field(None, description="End date for filtering (ISO 8601 format)")
 ) -> dict:
-    """
-    Searches İstinaf Hukuk Mahkemesi (Civil Court of Appeals) decisions using Bedesten API.
-    
-    İstinaf courts are intermediate appellate courts in the Turkish judicial system that handle
-    appeals from local civil courts before cases reach Yargıtay (Court of Cassation).
-    This is the only available tool for accessing İstinaf Hukuk Mahkemesi decisions.
-    
-    Key Features:
-    • Date range filtering with ISO 8601 format (YYYY-MM-DDTHH:MM:SS.000Z)
-    • Exact phrase search using double quotes: "\"legal term\"" 
-    • Regular search for individual keywords
-    • Pagination support (1-100 results per page)
-    
-    Use cases:
-    • Research appellate court precedents
-    • Track appeals from specific lower courts
-    • Find decisions on specific legal issues at appellate level
-    • Analyze intermediate court reasoning before supreme court review
-    
-    Returns structured data with decision metadata including dates, case numbers, and summaries.
-    Use get_istinaf_hukuk_bedesten_document_markdown() to retrieve full decision texts.
-    """
+    """Search Civil Court of Appeals decisions using Bedesten API."""
     search_data = BedestenSearchData(
         pageSize=pageSize,
         pageNumber=pageNumber,
@@ -1909,7 +1969,7 @@ async def search_istinaf_hukuk_bedesten(
         raise
 
 @app.tool(
-    description="Retrieve full text of an İstinaf Hukuk Mahkemesi decision document from Bedesten API in Markdown format",
+    description="Retrieve İstinaf Hukuk Mahkemesi decision document from Bedesten API in Markdown format. Before using, read docs://tools/bedesten_api_courts",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -1918,27 +1978,7 @@ async def search_istinaf_hukuk_bedesten(
 async def get_istinaf_hukuk_bedesten_document_markdown(
     documentId: str = Field(..., description="Document ID from Bedesten search results")
 ) -> BedestenDocumentMarkdown:
-    """
-    Retrieves the full text of an İstinaf Hukuk Mahkemesi decision document in Markdown format.
-    
-    This tool converts the original decision document (HTML or PDF) from Bedesten API
-    into clean, readable Markdown format suitable for analysis and processing.
-    
-    Input Requirements:
-    • documentId: Use the ID from search_istinaf_hukuk_bedesten results
-    • Document ID must be non-empty string
-    
-    Output Format:
-    • Clean Markdown text with proper formatting
-    • Preserves legal structure (headers, paragraphs, citations)
-    • Removes extraneous HTML/PDF artifacts
-    
-    Use for:
-    • Reading full appellate court decision texts
-    • Legal analysis of İstinaf court reasoning
-    • Citation extraction and reference building
-    • Content analysis and summarization
-    """
+    """Get Civil Court of Appeals decision as Markdown."""
     logger.info(f"Tool 'get_istinaf_hukuk_bedesten_document_markdown' called for ID: {documentId}")
     
     if not documentId or not documentId.strip():
@@ -1952,7 +1992,7 @@ async def get_istinaf_hukuk_bedesten_document_markdown(
 
 # --- MCP Tools for Bedesten (Kanun Yararına Bozma Search) ---
 @app.tool(
-    description="Search Extraordinary Appeal (Kanun Yararına Bozma - KYB) decisions using Bedesten API with date filtering and exact phrase search support",
+    description="Search Extraordinary Appeal (Kanun Yararına Bozma - KYB) decisions using Bedesten API. Before using, read docs://tools/bedesten_api_courts",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -1960,57 +2000,13 @@ async def get_istinaf_hukuk_bedesten_document_markdown(
     }
 )
 async def search_kyb_bedesten(
-    phrase: str = Field(..., description="""
-        Aranacak kavram/kelime. Gelişmiş arama operatörleri desteklenir:
-        • Space between words = OR logic (mülkiyet hakkı → "mülkiyet" OR "hakkı")
-        • "exact phrase" = Exact match ("mülkiyet hakkı" → exact phrase)
-        • word1+word2 = AND logic (+mülkiyet +hakkı → both words required)
-        • +"phrase1" +"phrase2" = Multiple required phrases
-        • +"required" -"excluded" = Include and exclude
-        Examples: mülkiyet hakkı | "mülkiyet hakkı" | +mülkiyet +hakkı | +"mülkiyet hakkı" +"anayasa" | +mülkiyet -"kira"
-    """),
+    phrase: str = Field(..., description="Search phrase with advanced operators"),
     pageSize: int = Field(10, ge=1, le=100, description="Sayfa başına sonuç sayısı"),
     pageNumber: int = Field(1, ge=1, description="Sayfa numarası"),
-    kararTarihiStart: Optional[str] = Field(None, description="""
-        Decision start date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-01-01T00:00:00.000Z" for decisions from Jan 1, 2024
-        Use with kararTarihiEnd for date range filtering
-    """),
-    kararTarihiEnd: Optional[str] = Field(None, description="""
-        Decision end date filter (optional). Format: YYYY-MM-DDTHH:MM:SS.000Z
-        Example: "2024-12-31T23:59:59.999Z" for decisions until Dec 31, 2024
-        Use with kararTarihiStart for date range filtering
-    """)
+    kararTarihiStart: Optional[str] = Field(None, description="Start date for filtering (ISO 8601 format)"),
+    kararTarihiEnd: Optional[str] = Field(None, description="End date for filtering (ISO 8601 format)")
 ) -> dict:
-    """
-    Searches Kanun Yararına Bozma (KYB - Extraordinary Appeal) decisions using Bedesten API.
-    
-    KYB is an extraordinary legal remedy in the Turkish judicial system where the
-    Public Prosecutor's Office can request review of finalized decisions in favor of
-    the law and defendants. This is the only available tool for accessing KYB decisions.
-    
-    Key Features:
-    • Date range filtering with ISO 8601 format (YYYY-MM-DDTHH:MM:SS.000Z)
-    • Exact phrase search using double quotes: "\"extraordinary appeal\""
-    • Regular search for individual keywords
-    • Pagination support (1-100 results per page)
-    
-    Legal Significance:
-    • Extraordinary remedy beyond regular appeals
-    • Initiated by Public Prosecutor's Office
-    • Reviews finalized decisions for legal errors
-    • Can benefit defendants retroactively
-    • Rare but important legal precedents
-    
-    Use cases:
-    • Research extraordinary appeal precedents
-    • Study prosecutorial challenges to final decisions
-    • Analyze legal errors in finalized cases
-    • Track KYB success rates and patterns
-    
-    Returns structured data with decision metadata. Use get_kyb_bedesten_document_markdown()
-    to retrieve full decision texts for detailed analysis.
-    """
+    """Search Extraordinary Appeal (KYB) decisions using Bedesten API."""
     search_data = BedestenSearchData(
         pageSize=pageSize,
         pageNumber=pageNumber,
@@ -2049,7 +2045,7 @@ async def search_kyb_bedesten(
         raise
 
 @app.tool(
-    description="Retrieve full text of a Kanun Yararına Bozma (KYB) decision document from Bedesten API in Markdown format",
+    description="Retrieve Kanun Yararına Bozma (KYB) decision document from Bedesten API in Markdown format. Before using, read docs://tools/bedesten_api_courts",
     annotations={
         "readOnlyHint": True,
         "idempotentHint": True
@@ -2058,33 +2054,7 @@ async def search_kyb_bedesten(
 async def get_kyb_bedesten_document_markdown(
     documentId: str = Field(..., description="Document ID from Bedesten search results")
 ) -> BedestenDocumentMarkdown:
-    """
-    Retrieves the full text of a Kanun Yararına Bozma (KYB) decision document in Markdown format.
-    
-    This tool converts the original extraordinary appeal decision document (HTML or PDF)
-    from Bedesten API into clean, readable Markdown format for analysis.
-    
-    Input Requirements:
-    • documentId: Use the ID from search_kyb_bedesten results
-    • Document ID must be non-empty string
-    
-    Output Format:
-    • Clean Markdown text with legal formatting preserved
-    • Structured content with headers and citations
-    • Removes technical artifacts from source documents
-    
-    Special Value for KYB Documents:
-    • Contains rare extraordinary appeal reasoning
-    • Shows prosecutorial arguments for legal review
-    • Documents correction of finalized legal errors
-    • Provides precedent for similar extraordinary circumstances
-    
-    Use for:
-    • Analyzing extraordinary appeal legal reasoning
-    • Understanding prosecutorial review criteria
-    • Research on legal error correction mechanisms
-    • Studying retroactive benefit applications
-    """
+    """Get Extraordinary Appeal (KYB) decision as Markdown."""
     logger.info(f"Tool 'get_kyb_bedesten_document_markdown' called for ID: {documentId}")
     
     if not documentId or not documentId.strip():
@@ -2099,7 +2069,7 @@ async def get_kyb_bedesten_document_markdown(
 # --- MCP Tools for Sayıştay (Turkish Court of Accounts) ---
 
 @app.tool(
-    description="Search Sayıştay Genel Kurul (General Assembly) decisions - precedent-setting interpretive rulings by the Turkish Court of Accounts on audit and accountability regulations",
+    description="Search Sayıştay Genel Kurul decisions for audit and accountability regulations. Before using, read docs://tools/sayistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -2109,43 +2079,13 @@ async def get_kyb_bedesten_document_markdown(
 async def search_sayistay_genel_kurul(
     karar_no: Optional[str] = Field(None, description="Decision number to search for (e.g., '5415')"),
     karar_ek: Optional[str] = Field(None, description="Decision appendix number (max 99, e.g., '1')"),
-    karar_tarih_baslangic: Optional[str] = Field(None, description="""
-        Decision start year for date range filtering.
-        Available years: 2006-2024. Format: 'YYYY' (e.g., '2020')
-        Use with karar_tarih_bitis for date range filtering.
-    """),
-    karar_tarih_bitis: Optional[str] = Field(None, description="""
-        Decision end year for date range filtering.
-        Available years: 2006-2024. Format: 'YYYY' (e.g., '2024')
-        Use with karar_tarih_baslangic for date range filtering.
-    """),
-    karar_tamami: Optional[str] = Field(None, description="""
-        Content/text search within decision summaries (max 400 characters).
-        Searches in decision abstracts and main content.
-        Example: 'belediye taşınmaz tahsis'
-    """),
+    karar_tarih_baslangic: Optional[str] = Field(None, description="See docs for details"),
+    karar_tarih_bitis: Optional[str] = Field(None, description="See docs for details"),
+    karar_tamami: Optional[str] = Field(None, description="See docs for details"),
     start: int = Field(0, description="Starting record for pagination (0-based)"),
     length: int = Field(10, description="Number of records per page (1-100)")
 ) -> GenelKurulSearchResponse:
-    """
-    Searches Sayıştay Genel Kurul (General Assembly) decisions.
-    
-    Genel Kurul decisions are the highest-level interpretive rulings from Turkey's
-    Court of Accounts, providing authoritative guidance on public audit standards,
-    accountability principles, and financial management regulations.
-    
-    Key Features:
-    • Decision number and appendix filtering
-    • Year-based date range filtering (2006-2024)
-    • Full-text content search in decision summaries
-    • Pagination support for large result sets
-    
-    Use Cases:
-    • Research audit precedents and interpretive guidance
-    • Find decisions on specific financial regulations
-    • Study evolution of public accountability standards
-    • Analyze Court of Accounts' institutional positions
-    """
+    """Search Sayıştay General Assembly decisions."""
     logger.info(f"Tool 'search_sayistay_genel_kurul' called with params: karar_no={karar_no}, karar_ek={karar_ek}, date_range={karar_tarih_baslangic}-{karar_tarih_bitis}, content={karar_tamami}")
     
     try:
@@ -2164,7 +2104,7 @@ async def search_sayistay_genel_kurul(
         raise
 
 @app.tool(
-    description="Search Sayıştay Temyiz Kurulu (Appeals Board) decisions - higher-level review of audit chamber findings and sanctions with chamber filtering (1-8), date filtering, and comprehensive search criteria",
+    description="Search Sayıştay Temyiz Kurulu decisions with chamber filtering and comprehensive search criteria. Before using, read docs://tools/sayistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -2172,74 +2112,20 @@ async def search_sayistay_genel_kurul(
     }
 )
 async def search_sayistay_temyiz_kurulu(
-    ilam_dairesi: DaireEnum = Field("ALL", description="""
-        Chamber/Department filter for appeals board decisions.
-        • ALL: All chambers (default)
-        • 1-8: Specific chamber number (1. Daire through 8. Daire)
-        Each chamber specializes in different types of public institutions.
-    """),
-    yili: Optional[str] = Field(None, description="""
-        Account year filter (Hesap Yılı).
-        Available years: 1993-2022. Format: 'YYYY' (e.g., '2020')
-        Refers to the fiscal year being audited, not decision date.
-    """),
-    karar_tarih_baslangic: Optional[str] = Field(None, description="""
-        Decision start year for date range filtering.
-        Available years: 2000, 2006-2024. Format: 'YYYY' (e.g., '2020')
-        Use with karar_tarih_bitis for date range filtering.
-    """),
-    karar_tarih_bitis: Optional[str] = Field(None, description="""
-        Decision end year for date range filtering.
-        Available years: 2000, 2006-2024. Format: 'YYYY' (e.g., '2024')
-        Use with karar_tarih_baslangic for date range filtering.
-    """),
-    kamu_idaresi_turu: KamuIdaresiTuruEnum = Field("ALL", description="""
-        Public administration type filter:
-        • ALL: All institutions (default)
-        • Genel Bütçe Kapsamındaki İdareler: General budget administrations
-        • Yüksek Öğretim Kurumları: Higher education institutions
-        • Belediyeler ve Bağlı İdareler: Municipalities and affiliates
-        • Other specific institution types
-    """),
+    ilam_dairesi: DaireEnum = Field("ALL", description="See docs for details"),
+    yili: Optional[str] = Field(None, description="See docs for details"),
+    karar_tarih_baslangic: Optional[str] = Field(None, description="See docs for details"),
+    karar_tarih_bitis: Optional[str] = Field(None, description="See docs for details"),
+    kamu_idaresi_turu: KamuIdaresiTuruEnum = Field("ALL", description="See docs for details"),
     ilam_no: Optional[str] = Field(None, description="Audit report number (İlam No, max 50 chars)"),
     dosya_no: Optional[str] = Field(None, description="File number for the case"),
     temyiz_tutanak_no: Optional[str] = Field(None, description="Appeals board meeting minutes number"),
-    temyiz_karar: Optional[str] = Field(None, description="""
-        Content search within appeals decisions.
-        Searches decision text and reasoning.
-        Example: 'araç kiralama kasko'
-    """),
-    web_karar_konusu: WebKararKonusuEnum = Field("ALL", description="""
-        Decision subject category filter:
-        • ALL: All subjects (default)
-        • İhale Mevzuatı ile İlgili Kararlar: Procurement legislation
-        • Personel Mevzuatı ile İlgili Kararlar: Personnel legislation
-        • Harcırah Mevzuatı ile İlgili Kararlar: Travel allowance legislation
-        • Other specialized legal areas
-    """),
+    temyiz_karar: Optional[str] = Field(None, description="See docs for details"),
+    web_karar_konusu: WebKararKonusuEnum = Field("ALL", description="See docs for details"),
     start: int = Field(0, description="Starting record for pagination (0-based)"),
     length: int = Field(10, description="Number of records per page (1-100)")
 ) -> TemyizKuruluSearchResponse:
-    """
-    Searches Sayıştay Temyiz Kurulu (Appeals Board) decisions.
-    
-    Temyiz Kurulu provides second-level review of audit chamber decisions,
-    examining appeals against sanctions and audit findings. These decisions
-    clarify audit standards and provide guidance on liability determinations.
-    
-    Key Features:
-    • Chamber-specific filtering (8 specialized audit chambers)
-    • Account year and decision date filtering (1993-2024)
-    • Public administration type categorization
-    • Subject matter classification and content search
-    • Case documentation tracking (ilam, dosya, tutanak numbers)
-    
-    Use Cases:
-    • Research appeals against specific audit findings
-    • Study chamber specialization patterns
-    • Analyze evolution of audit liability standards
-    • Find precedents for specific types of public institutions
-    """
+    """Search Sayıştay Appeals Board decisions."""
     logger.info(f"Tool 'search_sayistay_temyiz_kurulu' called with params: chamber={ilam_dairesi}, year={yili}, admin_type={kamu_idaresi_turu}, subject={web_karar_konusu}")
     
     try:
@@ -2263,7 +2149,7 @@ async def search_sayistay_temyiz_kurulu(
         raise
 
 @app.tool(
-    description="Search Sayıştay Daire (Chamber) decisions - first-instance audit findings and sanctions from individual audit chambers with comprehensive filtering and subject categorization",
+    description="Search Sayıştay Daire decisions with chamber filtering and subject categorization. Before using, read docs://tools/sayistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -2271,73 +2157,18 @@ async def search_sayistay_temyiz_kurulu(
     }
 )
 async def search_sayistay_daire(
-    yargilama_dairesi: DaireEnum = Field("ALL", description="""
-        Audit chamber filter:
-        • ALL: All chambers (default)
-        • 1-8: Specific chamber number (1. Daire through 8. Daire)
-        Each chamber audits different types of public institutions.
-    """),
-    karar_tarih_baslangic: Optional[str] = Field(None, description="""
-        Decision start year for date range filtering.
-        Available years: 2012-2025. Format: 'YYYY' (e.g., '2020')
-        Use with karar_tarih_bitis for date range filtering.
-    """),
-    karar_tarih_bitis: Optional[str] = Field(None, description="""
-        Decision end year for date range filtering.
-        Available years: 2012-2025. Format: 'YYYY' (e.g., '2024')
-        Use with karar_tarih_baslangic for date range filtering.
-    """),
+    yargilama_dairesi: DaireEnum = Field("ALL", description="See docs for details"),
+    karar_tarih_baslangic: Optional[str] = Field(None, description="See docs for details"),
+    karar_tarih_bitis: Optional[str] = Field(None, description="See docs for details"),
     ilam_no: Optional[str] = Field(None, description="Audit report number (İlam No, max 50 chars)"),
-    kamu_idaresi_turu: KamuIdaresiTuruEnum = Field("ALL", description="""
-        Public administration type filter:
-        • ALL: All institutions (default)
-        • Genel Bütçe Kapsamındaki İdareler: General budget administrations
-        • Yüksek Öğretim Kurumları: Higher education institutions
-        • Belediyeler ve Bağlı İdareler: Municipalities and affiliates
-        • Other specific institution types
-    """),
-    hesap_yili: Optional[str] = Field(None, description="""
-        Account year filter (Hesap Yılı).
-        Available years: 2005, 2008-2023. Format: 'YYYY' (e.g., '2020')
-        Refers to the fiscal year being audited, not decision date.
-    """),
-    web_karar_konusu: WebKararKonusuEnum = Field("ALL", description="""
-        Decision subject category filter:
-        • ALL: All subjects (default)
-        • İhale Mevzuatı ile İlgili Kararlar: Procurement legislation
-        • Personel Mevzuatı ile İlgili Kararlar: Personnel legislation
-        • Vergi Resmi Harç ve Diğer Gelirlerle İlgili Kararlar: Tax and fee legislation
-        • Other specialized legal areas
-    """),
-    web_karar_metni: Optional[str] = Field(None, description="""
-        Content search within chamber decisions.
-        Searches decision text and audit findings.
-        Example: 'birim fiyat revize edilmemesi'
-    """),
+    kamu_idaresi_turu: KamuIdaresiTuruEnum = Field("ALL", description="See docs for details"),
+    hesap_yili: Optional[str] = Field(None, description="See docs for details"),
+    web_karar_konusu: WebKararKonusuEnum = Field("ALL", description="See docs for details"),
+    web_karar_metni: Optional[str] = Field(None, description="See docs for details"),
     start: int = Field(0, description="Starting record for pagination (0-based)"),
     length: int = Field(10, description="Number of records per page (1-100)")
 ) -> DaireSearchResponse:
-    """
-    Searches Sayıştay Daire (Chamber) decisions.
-    
-    Chamber decisions represent first-instance audit findings, sanctions, and
-    liability determinations issued by specialized audit chambers. These form
-    the foundation of Turkey's public financial accountability system.
-    
-    Key Features:
-    • Chamber-specific filtering (8 specialized audit chambers)
-    • Decision and account year filtering (2012-2025)
-    • Public administration type categorization
-    • Subject matter classification and full-text search
-    • Audit report tracking and institutional analysis
-    
-    Use Cases:
-    • Research specific audit findings and sanctions
-    • Study chamber specialization and jurisdiction
-    • Analyze audit patterns by institution type
-    • Find precedents for financial irregularities
-    • Track audit evolution across fiscal years
-    """
+    """Search Sayıştay Chamber decisions."""
     logger.info(f"Tool 'search_sayistay_daire' called with params: chamber={yargilama_dairesi}, admin_type={kamu_idaresi_turu}, subject={web_karar_konusu}, content={web_karar_metni}")
     
     try:
@@ -2359,7 +2190,7 @@ async def search_sayistay_daire(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a Sayıştay Genel Kurul decision document in Markdown format for detailed analysis",
+    description="Retrieve Sayıştay Genel Kurul decision document in Markdown format. Before using, read docs://tools/sayistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": False,
@@ -2369,27 +2200,7 @@ async def search_sayistay_daire(
 async def get_sayistay_genel_kurul_document_markdown(
     decision_id: str = Field(..., description="Decision ID from search_sayistay_genel_kurul results")
 ) -> SayistayDocumentMarkdown:
-    """
-    Retrieves the full text of a Sayıştay Genel Kurul decision in Markdown format.
-    
-    This tool converts the original General Assembly decision document into clean,
-    readable Markdown format suitable for legal analysis and research.
-    
-    Input Requirements:
-    • decision_id: Use the ID from search_sayistay_genel_kurul results
-    • Decision ID must be non-empty string
-    
-    Output Format:
-    • Clean Markdown text with legal formatting preserved
-    • Structured content with reasoning and conclusions
-    • Removes technical artifacts from source documents
-    
-    Use for:
-    • Detailed analysis of audit precedents
-    • Research on public accountability standards
-    • Citation and reference building
-    • Legal interpretation and case study development
-    """
+    """Get Sayıştay General Assembly decision as Markdown."""
     logger.info(f"Tool 'get_sayistay_genel_kurul_document_markdown' called for ID: {decision_id}")
     
     if not decision_id or not decision_id.strip():
@@ -2402,7 +2213,7 @@ async def get_sayistay_genel_kurul_document_markdown(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a Sayıştay Temyiz Kurulu decision document in Markdown format for detailed appeals analysis",
+    description="Retrieve Sayıştay Temyiz Kurulu decision document in Markdown format. Before using, read docs://tools/sayistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": False,
@@ -2412,27 +2223,7 @@ async def get_sayistay_genel_kurul_document_markdown(
 async def get_sayistay_temyiz_kurulu_document_markdown(
     decision_id: str = Field(..., description="Decision ID from search_sayistay_temyiz_kurulu results")
 ) -> SayistayDocumentMarkdown:
-    """
-    Retrieves the full text of a Sayıştay Temyiz Kurulu decision in Markdown format.
-    
-    This tool converts the original Appeals Board decision document into clean,
-    readable Markdown format for analysis of appellate reasoning and standards.
-    
-    Input Requirements:
-    • decision_id: Use the ID from search_sayistay_temyiz_kurulu results
-    • Decision ID must be non-empty string
-    
-    Output Format:
-    • Clean Markdown text with appellate reasoning preserved
-    • Structured content with original findings and appeals analysis
-    • Removes technical artifacts from source documents
-    
-    Use for:
-    • Analysis of appeals board reasoning and standards
-    • Research on audit liability determination evolution
-    • Understanding chamber decision review criteria
-    • Precedent analysis for audit appeal cases
-    """
+    """Get Sayıştay Appeals Board decision as Markdown."""
     logger.info(f"Tool 'get_sayistay_temyiz_kurulu_document_markdown' called for ID: {decision_id}")
     
     if not decision_id or not decision_id.strip():
@@ -2445,7 +2236,7 @@ async def get_sayistay_temyiz_kurulu_document_markdown(
         raise
 
 @app.tool(
-    description="Retrieve the full text of a Sayıştay Daire decision document in Markdown format for detailed audit findings analysis",
+    description="Retrieve Sayıştay Daire decision document in Markdown format. Before using, read docs://tools/sayistay",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": False,
@@ -2455,27 +2246,7 @@ async def get_sayistay_temyiz_kurulu_document_markdown(
 async def get_sayistay_daire_document_markdown(
     decision_id: str = Field(..., description="Decision ID from search_sayistay_daire results")
 ) -> SayistayDocumentMarkdown:
-    """
-    Retrieves the full text of a Sayıştay Daire decision in Markdown format.
-    
-    This tool converts the original chamber decision document into clean,
-    readable Markdown format for analysis of first-instance audit findings.
-    
-    Input Requirements:
-    • decision_id: Use the ID from search_sayistay_daire results  
-    • Decision ID must be non-empty string
-    
-    Output Format:
-    • Clean Markdown text with audit findings preserved
-    • Structured content with violations and sanctions
-    • Removes technical artifacts from source documents
-    
-    Use for:
-    • Detailed analysis of audit findings and methodology
-    • Research on specific types of financial irregularities
-    • Understanding chamber jurisdiction and specialization
-    • Case study development for audit training and compliance
-    """
+    """Get Sayıştay Chamber decision as Markdown."""
     logger.info(f"Tool 'get_sayistay_daire_document_markdown' called for ID: {decision_id}")
     
     if not decision_id or not decision_id.strip():
@@ -2540,7 +2311,7 @@ atexit.register(perform_cleanup)
 
 # --- MCP Tools for KVKK ---
 @app.tool(
-    description="Search KVKK (Personal Data Protection Authority) decisions using Brave Search API with advanced filtering and Turkish language support. KVKK is Turkey's data protection authority enforcing personal data protection laws equivalent to GDPR",
+    description="Search KVKK decisions using Brave Search API for data protection authority decisions. Before using, read docs://tools/kvkk",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -2548,56 +2319,11 @@ atexit.register(perform_cleanup)
     }
 )
 async def search_kvkk_decisions(
-    keywords: str = Field(..., description="""
-        Keywords to search for in KVKK decisions. The search automatically targets KVKK decision summaries.
-        
-        Search Tips:
-        • Use Turkish legal terms: "açık rıza" (explicit consent), "veri güvenliği" (data security)
-        • Combine relevant terms: "kişisel veri işleme" (personal data processing)
-        • Use specific concepts: "GDPR", "veri ihlali" (data breach), "aydınlatma yükümlülüğü"
-        
-        Examples:
-        • "açık rıza" - Explicit consent decisions
-        • "veri güvenliği" - Data security cases
-        • "kişisel veri işleme" - Personal data processing
-        • "GDPR uyum" - GDPR compliance
-        • "veri ihlali bildirimi" - Data breach notifications
-    """),
+    keywords: str = Field(..., description="Turkish keywords for KVKK decision search"),
     page: int = Field(1, ge=1, le=50, description="Page number for results (1-50)."),
     pageSize: int = Field(10, ge=1, le=20, description="Number of results per page (1-20).")
 ) -> KvkkSearchResult:
-    """
-    Searches KVKK (Personal Data Protection Authority) decisions using Brave Search API.
-    
-    KVKK is Turkey's data protection authority, equivalent to European Data Protection Authorities.
-    It enforces the Turkish Personal Data Protection Law (KVKK - Kişisel Verilerin Korunması Kanunu)
-    which is Turkey's GDPR-equivalent legislation.
-    
-    Key Features:
-    • Brave Search API integration for comprehensive coverage
-    • Turkish language search with automatic site targeting
-    • Decision summaries with metadata extraction
-    • Pagination support for large result sets
-    • URL-based decision identification
-    
-    Search Coverage:
-    • Administrative fines and penalties
-    • Data processing compliance decisions
-    • Data breach notification requirements
-    • Consent and transparency obligations
-    • International data transfer decisions
-    • Data subject rights enforcement
-    
-    Use Cases:
-    • Research Turkish data protection precedents
-    • Analyze KVKK enforcement patterns
-    • Find specific data protection decisions
-    • Study compliance requirements and penalties
-    • Compare with GDPR implementation
-    
-    Returns structured data with decision titles, URLs, descriptions, and extractable metadata
-    including decision dates and numbers where available.
-    """
+    """Search function for legal decisions."""
     logger.info(f"KVKK search tool called with keywords: {keywords}")
     
     search_request = KvkkSearchRequest(
@@ -2622,7 +2348,7 @@ async def search_kvkk_decisions(
         )
 
 @app.tool(
-    description="Retrieve the full text content of a KVKK decision document converted to Markdown format with metadata extraction and proper legal document formatting",
+    description="Retrieve KVKK decision document in Markdown format with metadata extraction. Before using, read docs://tools/kvkk",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": False,
@@ -2630,53 +2356,10 @@ async def search_kvkk_decisions(
     }
 )
 async def get_kvkk_document_markdown(
-    decision_url: str = Field(..., description="""
-        URL of the KVKK decision document to retrieve.
-        
-        Expected URL format:
-        • Full KVKK decision page URL (e.g., https://www.kvkk.gov.tr/Icerik/7288/2021-1303)
-        • URL must point to a valid KVKK decision page
-        • URLs are typically obtained from search_kvkk_decisions results
-        
-        Examples:
-        • https://www.kvkk.gov.tr/Icerik/7288/2021-1303
-        • https://www.kvkk.gov.tr/Icerik/8043/2023-1356
-        
-        Note: The URL should be a complete KVKK decision page URL, not just a decision ID.
-    """),
+    decision_url: str = Field(..., description="See docs for details"),
     page_number: Union[int, str] = Field(1, description="Page number for paginated Markdown content (1-indexed, accepts int). Default is 1 (first 5,000 characters).")
 ) -> KvkkDocumentMarkdown:
-    """
-    Retrieves the full text of a KVKK decision document in paginated Markdown format.
-    
-    This tool fetches complete KVKK decision content from the official KVKK website
-    and converts it to clean, readable Markdown format. Content is paginated into
-    5,000-character chunks for easier processing.
-    
-    Input Requirements:
-    • decision_url: Complete KVKK decision page URL from search_kvkk_decisions results
-    • page_number: Page number for pagination (1-indexed, default: 1)
-    
-    Output Format:
-    • Clean Markdown text with proper KVKK decision formatting
-    • Pagination information (current_page, total_pages, is_paginated)
-    • Decision metadata (title, date, number, subject summary)
-    
-    Content Processing:
-    • Fetches HTML content from KVKK decision pages
-    • Extracts decision metadata (date, number, subject summary)
-    • Converts legal document content to properly formatted Markdown
-    • Preserves document structure and important formatting
-    • Removes navigation elements and website artifacts
-    
-    Use Cases:
-    • Reading full KVKK decision texts with proper formatting
-    • Legal analysis of personal data protection decisions
-    • Content analysis and case summarization
-    • Citation extraction and legal reference building
-    
-    Returns structured document with paginated Markdown content and extracted metadata.
-    """
+    """Get KVKK decision as paginated Markdown."""
     logger.info(f"KVKK document retrieval tool called for URL: {decision_url}")
     
     # Handle page_number type conversion (Union[int, str] -> int)
@@ -2784,27 +2467,7 @@ def get_preview_text(markdown_content: str, skip_chars: int = 100, preview_chars
     return preview.strip()
 
 @app.tool(
-    description="""
-    Search Turkish legal databases for court decisions and legal precedents. 
-    This tool searches across all major Turkish courts and returns document IDs for ChatGPT Deep Research.
-    
-    SEARCH LANGUAGE: Queries must be in Turkish - English terms will not work.
-    
-    SEARCH STRATEGY:
-    • Use specific legal terms: "mülkiyet hakkı" (property rights), "sözleşme ihlali" (contract breach)
-    • Try exact phrases in quotes: "\"idari işlem\"" for precise administrative law terms
-    • Combine multiple concepts: "+\"mülkiyet hakkı\" +\"anayasa\"" for constitutional property rights
-    • Search by legal areas: "\"ticaret hukuku\"", "\"medeni hukuk\"", "\"ceza hukuku\""
-    
-    COURT COVERAGE:
-    • Yargıtay: Supreme Court (civil/criminal final appeals)
-    • Danıştay: Council of State (administrative law)
-    • Yerel Hukuk: Local Civil Courts (first instance)
-    • İstinaf Hukuk: Civil Appeals Courts (intermediate appeals)  
-    • KYB: Extraordinary appeals (rare prosecutorial challenges)
-    
-    Returns document IDs that can be fetched with the fetch tool for full text analysis.
-    """,
+    description="Search Turkish courts (Turkish keywords only). Supports: +term (must have), -term (exclude), \"exact phrase\", term1 OR term2",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": True,
@@ -2812,31 +2475,7 @@ def get_preview_text(markdown_content: str, skip_chars: int = 100, preview_chars
     }
 )
 async def search(
-    query: str = Field(..., description="""Search query for Turkish legal documents via Bedesten API. 
-
-    IMPORTANT: This tool is specifically designed for ChatGPT Deep Research. 
-    Do NOT use for regular questions - use specific court tools instead.
-
-    SEARCH LANGUAGE REQUIREMENT:
-    • Keywords MUST be in Turkish language only
-    • Turkish legal documents require Turkish search terms
-    • English terms will return no results - always translate to Turkish first
-    • Examples: "property rights" → "mülkiyet hakkı", "contract violation" → "sözleşme ihlali"
-
-    Bedesten API Search Operators:
-    • Regular search: "mülkiyet kararı" - searches words separately (OR logic)
-    • Exact phrase: "\"mülkiyet kararı\"" - searches exact phrase (more precise)
-    • Required terms: "+mülkiyet +hak" - both terms must be present (AND logic)
-    • Excluded terms: "+mülkiyet -kira" - first term required, second excluded
-    • Combined: "+\"mülkiyet hakkı\" -\"kira sözleşmesi\"" - exact phrase required, exclude another
-    • Legal concepts: "\"idari işlem\"", "\"sözleşme ihlali\"", "\"tazminat davası\""
-    
-    Searches across all Turkish courts via Bedesten unified API:
-    • Yargıtay (Court of Cassation) - Supreme court civil/criminal decisions  
-    • Danıştay (Council of State) - Administrative court decisions
-    • Yerel Hukuk (Local Civil Courts) - First instance civil decisions
-    • İstinaf Hukuk (Civil Appeals Courts) - Appellate court decisions
-    • Kanun Yararına Bozma (KYB) - Extraordinary appeal decisions""")
+    query: str = Field(..., description="Turkish search query")
 ) -> Dict[str, List[Dict[str, str]]]:
     """
     Bedesten API search tool for ChatGPT Deep Research compatibility.
@@ -2961,27 +2600,7 @@ async def search(
         raise
 
 @app.tool(
-    description="""
-    Retrieve full text of Turkish legal documents using document IDs from search results.
-    This tool fetches complete court decisions in clean Markdown format for analysis.
-    
-    INPUT: Numeric document ID from search tool results (e.g., "730113500", "1149020800")
-    
-    OUTPUT: Complete legal document with:
-    • Full decision text in readable Markdown format
-    • Court metadata (chamber, case numbers, dates)
-    • Legal reasoning and conclusions
-    • Citations and legal references
-    
-    DOCUMENT TYPES:
-    • Supreme Court opinions with detailed legal analysis
-    • Administrative court decisions on government actions
-    • Civil court rulings on private disputes
-    • Criminal court decisions and sentencing rationale
-    • Extraordinary appeal reviews by prosecutors
-    
-    Use this tool after searching to get the complete text of relevant legal decisions for analysis, citation, and research.
-    """,
+    description="See docs for details",
     annotations={
         "readOnlyHint": True,
         "openWorldHint": False,  # Retrieves specific documents, not exploring
@@ -2989,15 +2608,7 @@ async def search(
     }
 )
 async def fetch(
-    id: str = Field(..., description="""Document identifier from search results (numeric only).
-
-    IMPORTANT: This tool is specifically designed for ChatGPT Deep Research.
-    Do NOT use for regular questions - use specific court document tools instead.
-
-    Expected ID format:
-    • Numeric document ID only (e.g., "730113500", "71370900")
-    • IDs are obtained from the search tool results
-    • Works for all Turkish court types via unified Bedesten API""")
+    id: str = Field(..., description="Document identifier from search results (numeric only)")
 ) -> Dict[str, Any]:
     """
     Bedesten API fetch tool for ChatGPT Deep Research compatibility.
@@ -3009,7 +2620,7 @@ async def fetch(
     For regular legal research, use specific court document tools.
     
     Input Format:
-    • id: Numeric document identifier from search results (e.g., "730113500", "71370900")
+    - id: Numeric document identifier from search results (e.g., "730113500", "71370900")
     
     Returns:
     Single object with numeric id, title, text (full Markdown content), mevzuat.adalet.gov.tr url, and metadata fields
