@@ -1,26 +1,22 @@
-# Yargi-MCP HTTP Mode
+# Working Simple HTTP Server
 FROM python:3.11-slim
 
 WORKDIR /app
 
-# System dependencies
+# System deps
 RUN apt-get update && apt-get install -y curl && rm -rf /var/lib/apt/lists/*
 
 # Copy requirements and install
 COPY requirements.txt .
 RUN pip install -r requirements.txt
 
-# Copy source code
+# Copy source
 COPY . .
 
 # Environment
 ENV PYTHONUNBUFFERED=1
-
-# No health check
 HEALTHCHECK NONE
-
-# Expose port
 EXPOSE 8001
 
-# Start in HTTP mode instead of STDIO
-CMD ["python", "-c", "import sys; sys.path.append('.'); from mcp_server_main import mcp; mcp.run(transport='http', host='0.0.0.0', port=8001)"]
+# Start with FastMCP CLI for HTTP mode
+CMD ["fastmcp", "run", "--transport", "http", "--host", "0.0.0.0", "--port", "8001", "mcp_server_main.py"]
