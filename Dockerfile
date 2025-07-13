@@ -19,4 +19,4 @@ HEALTHCHECK NONE
 EXPOSE 8001
 
 # Start with FastMCP CLI for HTTP mode
-CMD ["fastmcp", "run", "--transport", "http", "--host", "0.0.0.0", "--port", "8001", "mcp_server_main.py"]
+CMD ["fastmcp", "run", "--transport", "http", "--host", "0.0.0.0", "--port", "8000", "mcp_server_main.py"]
