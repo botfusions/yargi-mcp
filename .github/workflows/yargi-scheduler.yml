@@ -1,0 +1,136 @@
+name: Yargı Legal Data API for Lovable
+on:
+  schedule:
+    - cron: '0 */8 * * *'  # Her 8 saatte bir (legal data daha az değişir)
+  workflow_dispatch:
+    inputs:
+      search_query:
+        description: 'Arama sorgusu'
+        required: false
+        default: 'güncel kararlar'
+      court_type:
+        description: 'Mahkeme türü'
+        required: false
+        default: 'yargitay'
+        type: choice
+        options:
+          - yargitay
+          - danistay
+          - unified
+
+jobs:
+  save-legal-results:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        
+      - name: Call Yargı APIs & Save
+        run: |
+          mkdir -p public
+          
+          # Yargıtay data
+          echo "🏛️ Fetching Yargıtay data..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"query": "${{ github.event.inputs.search_query || 'güncel kararlar' }}", "court": "yargitay", "page_size": 20}' \
+            https://yargi-mcp-of8a.onrender.com/search \
+            -o public/yargitay-data.json || echo '{"error": "Yargıtay API failed"}' > public/yargitay-data.json
+          
+          # Danıştay data
+          echo "🏛️ Fetching Danıştay data..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"query": "${{ github.event.inputs.search_query || 'güncel kararlar' }}", "court": "danistay", "page_size": 20}' \
+            https://yargi-mcp-of8a.onrender.com/search \
+            -o public/danistay-data.json || echo '{"error": "Danıştay API failed"}' > public/danistay-data.json
+          
+          # Unified search (79 daire filtreleme)
+          echo "🏛️ Fetching Unified legal data..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"phrase": "${{ github.event.inputs.search_query || 'güncel hukuksal gelişmeler' }}", "court_types": ["yargitay", "danistay"], "page_size": 30}' \
+            https://yargi-mcp-of8a.onrender.com/search \
+            -o public/unified-legal-data.json || echo '{"error": "Unified API failed"}' > public/unified-legal-data.json
+          
+          # Emsal (UYAP) data  
+          echo "🏛️ Fetching Emsal data..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"query": "${{ github.event.inputs.search_query || 'emsal kararlar' }}", "court": "emsal", "page_size": 15}' \
+            https://yargi-mcp-of8a.onrender.com/search \
+            -o public/emsal-data.json || echo '{"error": "Emsal API failed"}' > public/emsal-data.json
+          
+          # Anayasa Mahkemesi data
+          echo "🏛️ Fetching Anayasa Mahkemesi data..."
+          curl -X POST \
+            -H "Content-Type: application/json" \
+            -d '{"query": "${{ github.event.inputs.search_query || 'anayasa' }}", "court": "anayasa", "page_size": 10}' \
+            https://yargi-mcp-of8a.onrender.com/search \
+            -o public/anayasa-data.json || echo '{"error": "Anayasa API failed"}' > public/anayasa-data.json
+          
+          # Summary data for quick access
+          echo "📊 Creating summary data..."
+          cat > public/legal-summary.json << 'EOF'
+          {
+            "last_updated": "'$(date -u +"%Y-%m-%dT%H:%M:%SZ")'",
+            "search_query": "${{ github.event.inputs.search_query || 'güncel kararlar' }}",
+            "available_courts": {
+              "yargitay": {
+                "name": "Yargıtay",
+                "description": "Türkiye'nin en yüksek temyiz mahkemesi",
+                "daire_count": 52,
+                "data_url": "yargitay-data.json"
+              },
+              "danistay": {
+                "name": "Danıştay", 
+                "description": "İdari yargının en yüksek mahkemesi",
+                "daire_count": 27,
+                "data_url": "danistay-data.json"
+              },
+              "emsal": {
+                "name": "Emsal (UYAP)",
+                "description": "UYAP sistemindeki emsal kararlar",
+                "data_url": "emsal-data.json"
+              },
+              "anayasa": {
+                "name": "Anayasa Mahkemesi",
+                "description": "Anayasa Mahkemesi kararları",
+                "data_url": "anayasa-data.json"
+              },
+              "unified": {
+                "name": "Birleşik Arama",
+                "description": "Tüm mahkemelerde 79 daire filtreleme",
+                "data_url": "unified-legal-data.json"
+              }
+            },
+            "total_courts": 8,
+            "total_daire_filters": 79,
+            "api_features": [
+              "Dual/Triple API Support",
+              "79 Daire/Kurul Filtreleme",
+              "Tarih & Kesin Cümle Arama",
+              "Markdown Format Export",
+              "Real-time Search"
+            ]
+          }
+          EOF
+          
+          # Check file sizes
+          echo "📏 File sizes:"
+          ls -lh public/*.json
+          
+      - name: Commit Legal Results
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action - Yargı Data"
+          git add public/*.json
+          git commit -m "🏛️ Update legal data: $(date '+%Y-%m-%d %H:%M') - Query: ${{ github.event.inputs.search_query || 'güncel kararlar' }}" || exit 0
+          git push
+          
+      - name: Upload Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: legal-data-${{ github.run_number }}
+          path: public/*.json
+          retention-days: 30
