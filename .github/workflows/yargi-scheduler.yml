@@ -46,12 +46,7 @@ jobs:
               "yargitay": {"name": "Yargıtay", "daire_count": 52},
               "danistay": {"name": "Danıştay", "daire_count": 27},
               "unified": {"name": "Birleşik Arama", "daire_count": 79}
-            },
-            "data_files": [
-              "yargitay-data.json",
-              "danistay-data.json", 
-              "unified-legal-data.json"
-            ]
+            }
           }
           EOF
           
