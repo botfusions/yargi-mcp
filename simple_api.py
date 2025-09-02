@@ -7,6 +7,15 @@ import os
 import json
 from datetime import datetime
 
+# Supabase integration
+try:
+    from yargi_supabase_integration import yargi_db
+    SUPABASE_AVAILABLE = True
+    print("Supabase integration loaded successfully")
+except ImportError as e:
+    print(f"Supabase integration not available: {e}")
+    SUPABASE_AVAILABLE = False
+
 app = FastAPI(title="Yargı MCP API for n8n", version="2.0.0")
 
 app.add_middleware(
@@ -24,15 +33,14 @@ try:
         search_danistay_by_keyword,
         search_danistay_detailed,
         get_danistay_document_markdown,
-        search_bedesten_unified,
         get_bedesten_document_markdown,
         search_emsal_detailed_decisions,
         get_emsal_document_markdown
     )
     MCP_AVAILABLE = True
-    print("✅ MCP Server functions imported successfully")
+    print("MCP Server functions imported successfully")
 except ImportError as e:
-    print(f"⚠️ MCP server not available: {e}")
+    print(f"Warning - MCP server not available: {e}")
     MCP_AVAILABLE = False
     
     # Intelligent fallback with realistic Turkish legal data
@@ -267,11 +275,26 @@ def root():
     }
 
 @app.get("/health")
-def health():
+async def health():
+    """Health check endpoint with Supabase status"""
+    supabase_status = "unknown"
+    
+    if SUPABASE_AVAILABLE:
+        try:
+            from supabase_client import test_supabase_connection
+            db_test = await test_supabase_connection()
+            supabase_status = "connected" if db_test["success"] else "failed"
+        except Exception as e:
+            supabase_status = f"error: {str(e)}"
+    else:
+        supabase_status = "not available"
+    
     return {
         "status": "healthy",
         "api": "working",
         "mcp_status": "available" if MCP_AVAILABLE else "fallback_mode",
+        "supabase_available": SUPABASE_AVAILABLE,
+        "supabase_status": supabase_status,
         "timestamp": datetime.now().isoformat()
     }
 
@@ -303,6 +326,7 @@ async def search_post(request: GeneralSearchRequest):
 @app.post("/webhook/yargitay-search")
 async def webhook_yargitay_search(request: YargitaySearchRequest):
     try:
+        # Execute search
         result = await search_yargitay_detailed(
             andKelimeler=request.andKelimeler,
             daire=request.daire,
@@ -312,11 +336,31 @@ async def webhook_yargitay_search(request: YargitaySearchRequest):
             kararNo=request.kararNo,
             page_size=request.page_size
         )
+        
+        # Log to Supabase if available
+        if SUPABASE_AVAILABLE:
+            try:
+                await yargi_db.save_search_query(
+                    query_text=str(request.andKelimeler or ""),
+                    search_type="yargitay",
+                    metadata={
+                        "daire": request.daire,
+                        "esasYil": request.esasYil,
+                        "esasNo": request.esasNo,
+                        "kararYil": request.kararYil,
+                        "kararNo": request.kararNo,
+                        "page_size": request.page_size
+                    }
+                )
+            except Exception as db_error:
+                print(f"Database logging error: {db_error}")
+        
         return {
             "success": True,
             "data": result,
             "source": "yargitay",
             "mcp_available": MCP_AVAILABLE,
+            "supabase_available": SUPABASE_AVAILABLE,
             "timestamp": datetime.now().isoformat()
         }
     except Exception as e:

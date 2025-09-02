@@ -1,33 +1,42 @@
 version: '3.8'
 
 services:
-  yargi-mcp:
+  turklawai-api:
     build: .
-    image: yargi-mcp:latest
-    container_name: yargi-mcp-server
+    image: turklawai-api:latest
+    container_name: turklawai-api-production
     ports:
-      - "${PORT:-8000}:8000"
+      - "8000:8000"
     environment:
+      # Supabase Configuration
+      - SUPABASE_URL=https://supabase.turklawai.com
+      - SUPABASE_ANON_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc1NjY1MTM4MCwiZXhwIjo0OTEyMzI0OTgwLCJyb2xlIjoiYW5vbiJ9.tDEh7l2zecY6zLl19zVT3U_e7seWAiuBMcdnCcq2Jxo
+      - SUPABASE_SERVICE_ROLE_KEY=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJzdXBhYmFzZSIsImlhdCI6MTc1NjY1MTM4MCwiZXhwIjo0OTEyMzI0OTgwLCJyb2xlIjoic2VydmljZV9yb2xlIn0.cZoxspdisEpO8BQh-EGiMtOGTqhjnLGzP92Y7IPuCrw
+      - YARGI_SCHEMA=yargi_mcp
+      # TurkLawAI Configuration
+      - TURKLAWAI_DOMAIN=turklawai.com
+      - JWT_SECRET_KEY=TURKLAWAI-PRODUCTION-JWT-SECRET-2025-SECURE-KEY-64-CHARS-LONG-MINIMUM
       - HOST=0.0.0.0
       - PORT=8000
-      - LOG_LEVEL=${LOG_LEVEL:-info}
-      - ALLOWED_ORIGINS=${ALLOWED_ORIGINS:-*}
-      - API_TOKEN=${API_TOKEN:-}
+      - ENVIRONMENT=production
+      - DEBUG=false
+      - ENABLE_SUBSCRIPTION_SYSTEM=true
+      - ALLOWED_ORIGINS=https://turklawai.com,https://www.turklawai.com,https://api.turklawai.com
       - PYTHONUNBUFFERED=1
     volumes:
       # Mount logs directory
       - ./logs:/app/logs
-      # Mount .env file if it exists
-      - ./.env:/app/.env:ro
+      # Mount production env file
+      - ./.env.production:/app/.env:ro
     restart: unless-stopped
     healthcheck:
-      test: ["CMD", "python", "-c", "import httpx; httpx.get('http://localhost:8000/health').raise_for_status()"]
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
       interval: 30s
       timeout: 10s
       retries: 3
-      start_period: 10s
+      start_period: 40s
     networks:
-      - yargi-network
+      - turklawai-network
 
   # Optional: Nginx reverse proxy
   nginx:
@@ -40,26 +49,26 @@ services:
       - ./nginx.conf:/etc/nginx/nginx.conf:ro
       - ./ssl:/etc/nginx/ssl:ro
     depends_on:
-      - yargi-mcp
+      - turklawai-api
     networks:
-      - yargi-network
+      - turklawai-network
     profiles:
       - production
 
-  # Optional: Redis for caching (future enhancement)
+  # Optional: Redis for caching (future enhancement)  
   redis:
     image: redis:alpine
-    container_name: yargi-redis
+    container_name: turklawai-redis
     command: redis-server --appendonly yes
     volumes:
       - redis-data:/data
     networks:
-      - yargi-network
+      - turklawai-network
     profiles:
       - with-cache
 
 networks:
-  yargi-network:
+  turklawai-network:
     driver: bridge
 
 volumes:

@@ -1,0 +1,301 @@
+{
+  "info": {
+    "name": "TurkLawAI API",
+    "description": "Complete API collection for TurkLawAI MCP Server - Turkish Legal Search Platform",
+    "version": "2.0.0",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8002",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health & Status",
+      "item": [
+        {
+          "name": "Root - Service Info",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/",
+              "host": ["{{base_url}}"],
+              "path": [""]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/health",
+              "host": ["{{base_url}}"],
+              "path": ["health"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "User Management",
+      "item": [
+        {
+          "name": "Get User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Authorization",
+                "value": "Bearer {{jwt_token}}",
+                "description": "JWT token for authenticated requests"
+              }
+            ],
+            "url": {
+              "raw": "{{base_url}}/user/profile",
+              "host": ["{{base_url}}"],
+              "path": ["user", "profile"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Court Decisions Search",
+      "item": [
+        {
+          "name": "Search Yargıtay (Supreme Court)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"andKelimeler\": \"hukuk\",\n  \"daire\": \"1. Hukuk Dairesi\",\n  \"page_size\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/search/yargitay",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search", "yargitay"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Yargıtay with Case Numbers",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"andKelimeler\": \"taşınmaz\",\n  \"daire\": \"1. Hukuk Dairesi\",\n  \"esasYil\": \"2024\",\n  \"kararYil\": \"2024\",\n  \"page_size\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/search/yargitay",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search", "yargitay"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Danıştay (Council of State)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"andKelimeler\": \"vergi\",\n  \"daire\": \"4. Daire\",\n  \"page_size\": 5\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/search/danistay",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search", "danistay"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Document Retrieval",
+      "item": [
+        {
+          "name": "Get Yargıtay Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/document/yargitay/{{document_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "document", "yargitay", "{{document_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Danıştay Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/document/danistay/{{document_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "document", "danistay", "{{document_id}}"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Emsal Document",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/document/emsal/{{document_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "document", "emsal", "{{document_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Turkish Legislation",
+      "item": [
+        {
+          "name": "Search Mevzuat (Legislation)",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mevzuat_adi\": \"medeni kanun\",\n  \"page_size\": 10\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/search/mevzuat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search", "mevzuat"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Mevzuat by Full Text",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"phrase\": \"mülkiyet hakkı\",\n  \"page_size\": 5,\n  \"sort_field\": \"RESMI_GAZETE_TARIHI\",\n  \"sort_direction\": \"desc\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/search/mevzuat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search", "mevzuat"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Search Mevzuat with Types Filter",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"mevzuat_adi\": \"borçlar\",\n  \"mevzuat_turleri\": \"[\\\"KANUN\\\", \\\"YONETMELIK\\\"]\",\n  \"page_size\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/search/mevzuat",
+              "host": ["{{base_url}}"],
+              "path": ["api", "search", "mevzuat"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mevzuat Article Tree",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/mevzuat/{{mevzuat_id}}/articles",
+              "host": ["{{base_url}}"],
+              "path": ["api", "mevzuat", "{{mevzuat_id}}", "articles"]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Get Mevzuat Article Content",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/mevzuat/{{mevzuat_id}}/article/{{madde_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "mevzuat", "{{mevzuat_id}}", "article", "{{madde_id}}"]
+            }
+          },
+          "response": []
+        }
+      ]
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "type": "text/javascript",
+        "exec": [
+          "// Auto-set variables for testing",
+          "pm.globals.set('base_url', 'http://localhost:8002');",
+          "",
+          "// Sample document IDs for testing",
+          "pm.globals.set('document_id', 'sample-doc-id');",
+          "pm.globals.set('mevzuat_id', '343829');",
+          "pm.globals.set('madde_id', '2596801');"
+        ]
+      }
+    }
+  ]
+}
