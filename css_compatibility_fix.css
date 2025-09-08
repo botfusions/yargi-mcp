@@ -1,0 +1,246 @@
+/* TurkLawAI.com - CSS Uyumluluk Düzeltmeleri */
+
+/* ✅ DÜZELTME: Text Size Adjust */
+html {
+    /* Modern standard property - Chrome 54+, Edge 79+ için */
+    text-size-adjust: 100%;
+    
+    /* Legacy webkit prefix - eski tarayıcılar için */
+    -webkit-text-size-adjust: 100%;
+    
+    /* Mozilla prefix - Firefox için */
+    -moz-text-size-adjust: 100%;
+    
+    /* Microsoft prefix - eski IE/Edge için */
+    -ms-text-size-adjust: 100%;
+}
+
+/* Body için de uygulamalıyız */
+body {
+    text-size-adjust: 100%;
+    -webkit-text-size-adjust: 100%;
+    -moz-text-size-adjust: 100%;
+    -ms-text-size-adjust: 100%;
+}
+
+/* ✅ BONUS: Diğer Uyumluluk Düzeltmeleri */
+
+/* Modern CSS Custom Properties with fallbacks */
+:root {
+    --primary-color: #1e40af;
+    --secondary-color: #3b82f6;
+    --text-color: #1f2937;
+    --bg-color: #ffffff;
+    --border-radius: 8px;
+    --transition: 0.3s ease;
+}
+
+/* Flexbox with fallbacks */
+.legal-container {
+    /* Modern flexbox */
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    
+    /* Fallback for older browsers */
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    
+    -webkit-box-orient: vertical;
+    -webkit-box-direction: normal;
+    -webkit-flex-direction: column;
+    -ms-flex-direction: column;
+}
+
+/* Grid with flexbox fallback */
+.search-results-grid {
+    /* Primary: CSS Grid */
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+    
+    /* Fallback: Flexbox */
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -ms-flexbox;
+    display: flex;
+    
+    -webkit-flex-wrap: wrap;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
+/* Grid destekleyen tarayıcılar için specifik stil */
+@supports (display: grid) {
+    .search-results-grid {
+        display: grid;
+    }
+}
+
+/* Transform with prefixes */
+.legal-card {
+    /* Modern transform */
+    transform: translateY(0);
+    transition: transform var(--transition, 0.3s ease);
+    
+    /* Webkit prefix */
+    -webkit-transform: translateY(0);
+    -webkit-transition: -webkit-transform var(--transition, 0.3s ease);
+    
+    /* Mozilla prefix */
+    -moz-transform: translateY(0);
+    -moz-transition: -moz-transform var(--transition, 0.3s ease);
+    
+    /* Microsoft prefix */
+    -ms-transform: translateY(0);
+    -ms-transition: -ms-transform var(--transition, 0.3s ease);
+}
+
+.legal-card:hover {
+    transform: translateY(-4px);
+    -webkit-transform: translateY(-4px);
+    -moz-transform: translateY(-4px);
+    -ms-transform: translateY(-4px);
+}
+
+/* Box shadow with prefixes */
+.legal-card-shadow {
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    -webkit-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    -moz-box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Border radius with prefixes */
+.legal-element {
+    border-radius: var(--border-radius, 8px);
+    -webkit-border-radius: var(--border-radius, 8px);
+    -moz-border-radius: var(--border-radius, 8px);
+}
+
+/* User select with prefixes */
+.legal-text-selectable {
+    user-select: text;
+    -webkit-user-select: text;
+    -moz-user-select: text;
+    -ms-user-select: text;
+}
+
+.legal-text-non-selectable {
+    user-select: none;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+}
+
+/* Appearance none with prefixes */
+.legal-input, .legal-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+}
+
+/* Placeholder styling with prefixes */
+.legal-input::placeholder {
+    color: #9ca3af;
+    opacity: 1;
+}
+
+.legal-input::-webkit-input-placeholder {
+    color: #9ca3af;
+}
+
+.legal-input::-moz-placeholder {
+    color: #9ca3af;
+    opacity: 1;
+}
+
+.legal-input:-ms-input-placeholder {
+    color: #9ca3af;
+}
+
+/* Filter effects with prefixes */
+.legal-image-filter {
+    filter: brightness(1.1) contrast(1.05);
+    -webkit-filter: brightness(1.1) contrast(1.05);
+}
+
+/* Backdrop filter with prefixes */
+.legal-modal-backdrop {
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+}
+
+/* Clip path with prefixes */
+.legal-clip {
+    clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+    -webkit-clip-path: polygon(0 0, 100% 0, 100% 85%, 0 100%);
+}
+
+/* Scroll behavior */
+html {
+    scroll-behavior: smooth;
+}
+
+/* For browsers that don't support smooth scrolling */
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+/* ✅ RESPONSIVE BREAKPOINTS */
+@media screen and (max-width: 768px) {
+    .legal-container {
+        padding: 1rem;
+        gap: 0.75rem;
+    }
+    
+    .legal-text {
+        font-size: 14px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    html {
+        /* iOS Safari zoom önleme */
+        text-size-adjust: 100%;
+        -webkit-text-size-adjust: 100%;
+    }
+    
+    .legal-input {
+        font-size: 16px; /* iOS zoom engelleyici */
+    }
+}
+
+/* ✅ HIGH CONTRAST MODE */
+@media (prefers-contrast: high) {
+    .legal-card {
+        border: 2px solid;
+    }
+    
+    .legal-button {
+        border: 2px solid;
+    }
+}
+
+/* ✅ REDUCED MOTION */
+@media (prefers-reduced-motion: reduce) {
+    * {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}
+
+/* ✅ PRINT STYLES */
+@media print {
+    .legal-card {
+        box-shadow: none;
+        border: 1px solid #ddd;
+    }
+    
+    .legal-button {
+        display: none;
+    }
+}

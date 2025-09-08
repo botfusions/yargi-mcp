@@ -1,0 +1,721 @@
+{
+  "name": "TurkLawAI.com",
+  "timestamp": "2025-09-08T17:10:11.627586",
+  "structure": {
+    "python_files": [
+      {
+        "path": "asgi_app.py",
+        "size": 26492,
+        "modified": "2025-09-02T11:23:12.519306"
+      },
+      {
+        "path": "auto_documentation_system.py",
+        "size": 23261,
+        "modified": "2025-09-08T17:10:06.591185"
+      },
+      {
+        "path": "check_response_format.py",
+        "size": 707,
+        "modified": "2025-09-02T11:23:12.522309"
+      },
+      {
+        "path": "create_table_with_service_key.py",
+        "size": 5852,
+        "modified": "2025-09-02T11:16:38.981367"
+      },
+      {
+        "path": "create_users_table.py",
+        "size": 5875,
+        "modified": "2025-09-02T11:13:17.297596"
+      },
+      {
+        "path": "deploy_supabase_schema.py",
+        "size": 9369,
+        "modified": "2025-09-06T16:09:46.468538"
+      },
+      {
+        "path": "direct_table_create.py",
+        "size": 5862,
+        "modified": "2025-09-06T16:12:04.747358"
+      },
+      {
+        "path": "example_fastapi_app.py",
+        "size": 79343,
+        "modified": "2025-07-13T15:11:36.269939"
+      },
+      {
+        "path": "mcp_app.py",
+        "size": 1062,
+        "modified": "2025-09-02T11:23:12.526308"
+      },
+      {
+        "path": "mcp_auth_factory.py",
+        "size": 7087,
+        "modified": "2025-07-13T15:11:36.273940"
+      },
+      {
+        "path": "mcp_auth_http_adapter.py",
+        "size": 15526,
+        "modified": "2025-07-13T15:11:36.274940"
+      },
+      {
+        "path": "mcp_auth_http_simple.py",
+        "size": 22257,
+        "modified": "2025-07-13T15:11:36.274940"
+      },
+      {
+        "path": "mcp_server_main.py",
+        "size": 97539,
+        "modified": "2025-09-02T11:23:12.527308"
+      },
+      {
+        "path": "postgres_deploy.py",
+        "size": 2760,
+        "modified": "2025-09-06T16:10:40.373662"
+      },
+      {
+        "path": "redis_session_store.py",
+        "size": 17787,
+        "modified": "2025-07-13T15:11:36.278939"
+      },
+      {
+        "path": "run_asgi.py",
+        "size": 3341,
+        "modified": "2025-07-13T17:58:12.321217"
+      },
+      {
+        "path": "simple_api.py",
+        "size": 18173,
+        "modified": "2025-09-01T10:24:48.646513"
+      },
+      {
+        "path": "simple_api_backup.py",
+        "size": 515,
+        "modified": "2025-07-13T20:21:29.530042"
+      },
+      {
+        "path": "simple_deploy.py",
+        "size": 1847,
+        "modified": "2025-09-06T16:10:04.606345"
+      },
+      {
+        "path": "simple_user_test.py",
+        "size": 3552,
+        "modified": "2025-09-02T11:06:15.247621"
+      },
+      {
+        "path": "starlette_app.py",
+        "size": 5045,
+        "modified": "2025-07-13T15:11:36.281556"
+      },
+      {
+        "path": "stripe_webhook.py",
+        "size": 1146,
+        "modified": "2025-07-13T15:11:36.281556"
+      },
+      {
+        "path": "supabase_client.py",
+        "size": 6853,
+        "modified": "2025-09-01T10:13:58.692431"
+      },
+      {
+        "path": "supabase_rest_deploy.py",
+        "size": 9422,
+        "modified": "2025-09-06T16:11:36.110099"
+      },
+      {
+        "path": "test_app.py",
+        "size": 176,
+        "modified": "2025-07-13T18:22:26.136999"
+      },
+      {
+        "path": "test_table_creation.py",
+        "size": 3251,
+        "modified": "2025-09-02T11:12:40.487502"
+      },
+      {
+        "path": "token_manager.py",
+        "size": 8438,
+        "modified": "2025-09-02T11:23:12.570805"
+      },
+      {
+        "path": "turklawai_integration.py",
+        "size": 21415,
+        "modified": "2025-09-08T17:07:17.574062"
+      },
+      {
+        "path": "turklawai_mcp_server.py",
+        "size": 36031,
+        "modified": "2025-09-02T11:07:19.998570"
+      },
+      {
+        "path": "turklawai_subscription_system.py",
+        "size": 14967,
+        "modified": "2025-09-01T10:36:43.118888"
+      },
+      {
+        "path": "web_routes.py",
+        "size": 3027,
+        "modified": "2025-09-02T11:23:12.571804"
+      },
+      {
+        "path": "yargi_supabase_integration.py",
+        "size": 7890,
+        "modified": "2025-09-01T10:15:27.007134"
+      },
+      {
+        "path": "__main__.py",
+        "size": 142,
+        "modified": "2025-07-13T15:11:36.263941"
+      },
+      {
+        "path": "anayasa_mcp_module\\bireysel_client.py",
+        "size": 18684,
+        "modified": "2025-09-02T11:23:12.518306"
+      },
+      {
+        "path": "anayasa_mcp_module\\client.py",
+        "size": 21572,
+        "modified": "2025-09-02T11:23:12.518306"
+      },
+      {
+        "path": "anayasa_mcp_module\\models.py",
+        "size": 15907,
+        "modified": "2025-09-02T11:23:12.519306"
+      },
+      {
+        "path": "anayasa_mcp_module\\unified_client.py",
+        "size": 5559,
+        "modified": "2025-09-02T11:23:12.519306"
+      },
+      {
+        "path": "anayasa_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.264939"
+      },
+      {
+        "path": "bddk_mcp_module\\client.py",
+        "size": 9990,
+        "modified": "2025-09-02T11:23:12.520306"
+      },
+      {
+        "path": "bddk_mcp_module\\models.py",
+        "size": 1908,
+        "modified": "2025-09-02T11:23:12.520306"
+      },
+      {
+        "path": "bddk_mcp_module\\__init__.py",
+        "size": 338,
+        "modified": "2025-09-02T11:23:12.520306"
+      },
+      {
+        "path": "bedesten_mcp_module\\client.py",
+        "size": 8624,
+        "modified": "2025-09-02T11:23:12.521306"
+      },
+      {
+        "path": "bedesten_mcp_module\\enums.py",
+        "size": 5257,
+        "modified": "2025-09-02T11:23:12.521306"
+      },
+      {
+        "path": "bedesten_mcp_module\\models.py",
+        "size": 4169,
+        "modified": "2025-09-02T11:23:12.521306"
+      },
+      {
+        "path": "bedesten_mcp_module\\__init__.py",
+        "size": 33,
+        "modified": "2025-07-13T15:11:36.265939"
+      },
+      {
+        "path": "danistay_mcp_module\\client.py",
+        "size": 9439,
+        "modified": "2025-09-02T11:23:12.522309"
+      },
+      {
+        "path": "danistay_mcp_module\\models.py",
+        "size": 5787,
+        "modified": "2025-09-02T11:23:12.523307"
+      },
+      {
+        "path": "danistay_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.266939"
+      },
+      {
+        "path": "emsal_mcp_module\\client.py",
+        "size": 8441,
+        "modified": "2025-09-02T11:23:12.523307"
+      },
+      {
+        "path": "emsal_mcp_module\\models.py",
+        "size": 4614,
+        "modified": "2025-09-02T11:23:12.523307"
+      },
+      {
+        "path": "emsal_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.268940"
+      },
+      {
+        "path": "kik_mcp_module\\client.py",
+        "size": 65894,
+        "modified": "2025-09-02T11:23:12.525309"
+      },
+      {
+        "path": "kik_mcp_module\\models.py",
+        "size": 3671,
+        "modified": "2025-09-02T11:23:12.525309"
+      },
+      {
+        "path": "kik_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.270940"
+      },
+      {
+        "path": "kvkk_mcp_module\\client.py",
+        "size": 15525,
+        "modified": "2025-07-13T15:11:36.271940"
+      },
+      {
+        "path": "kvkk_mcp_module\\models.py",
+        "size": 3062,
+        "modified": "2025-09-02T11:23:12.525309"
+      },
+      {
+        "path": "kvkk_mcp_module\\__init__.py",
+        "size": 29,
+        "modified": "2025-07-13T15:11:36.271940"
+      },
+      {
+        "path": "mcp_auth\\clerk_config.py",
+        "size": 2599,
+        "modified": "2025-07-13T15:11:36.272939"
+      },
+      {
+        "path": "mcp_auth\\middleware.py",
+        "size": 12144,
+        "modified": "2025-07-13T15:11:36.272939"
+      },
+      {
+        "path": "mcp_auth\\oauth.py",
+        "size": 10996,
+        "modified": "2025-07-13T15:11:36.272939"
+      },
+      {
+        "path": "mcp_auth\\policy.py",
+        "size": 7581,
+        "modified": "2025-07-13T15:11:36.273940"
+      },
+      {
+        "path": "mcp_auth\\storage.py",
+        "size": 4338,
+        "modified": "2025-07-13T15:11:36.273940"
+      },
+      {
+        "path": "mcp_auth\\__init__.py",
+        "size": 681,
+        "modified": "2025-07-13T15:11:36.272939"
+      },
+      {
+        "path": "rekabet_mcp_module\\client.py",
+        "size": 24480,
+        "modified": "2025-07-13T15:11:36.278939"
+      },
+      {
+        "path": "rekabet_mcp_module\\models.py",
+        "size": 3548,
+        "modified": "2025-09-02T11:23:12.541832"
+      },
+      {
+        "path": "rekabet_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.278939"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\asgi_app.py",
+        "size": 23491,
+        "modified": "2025-09-02T11:23:12.547834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\check_response_format.py",
+        "size": 707,
+        "modified": "2025-09-02T11:23:12.550834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\example_fastapi_app.py",
+        "size": 79343,
+        "modified": "2025-09-02T11:23:12.553835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth_factory.py",
+        "size": 7087,
+        "modified": "2025-09-02T11:23:12.556834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth_http_adapter.py",
+        "size": 15526,
+        "modified": "2025-09-02T11:23:12.558167"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth_http_simple.py",
+        "size": 22257,
+        "modified": "2025-09-02T11:23:12.558167"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_server_main.py",
+        "size": 124302,
+        "modified": "2025-09-02T11:23:12.559172"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\redis_session_store.py",
+        "size": 17787,
+        "modified": "2025-09-02T11:23:12.561804"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\run_asgi.py",
+        "size": 3341,
+        "modified": "2025-09-02T11:23:12.562803"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\starlette_app.py",
+        "size": 5045,
+        "modified": "2025-09-02T11:23:12.565801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\stripe_webhook.py",
+        "size": 1146,
+        "modified": "2025-09-02T11:23:12.565801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\__main__.py",
+        "size": 142,
+        "modified": "2025-09-02T11:23:12.546834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\anayasa_mcp_module\\bireysel_client.py",
+        "size": 18684,
+        "modified": "2025-09-02T11:23:12.546834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\anayasa_mcp_module\\client.py",
+        "size": 21572,
+        "modified": "2025-09-02T11:23:12.547834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\anayasa_mcp_module\\models.py",
+        "size": 15907,
+        "modified": "2025-09-02T11:23:12.547834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\anayasa_mcp_module\\unified_client.py",
+        "size": 5559,
+        "modified": "2025-09-02T11:23:12.547834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\anayasa_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.546834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bddk_mcp_module\\client.py",
+        "size": 9990,
+        "modified": "2025-09-02T11:23:12.548834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bddk_mcp_module\\models.py",
+        "size": 1908,
+        "modified": "2025-09-02T11:23:12.548834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bddk_mcp_module\\__init__.py",
+        "size": 338,
+        "modified": "2025-09-02T11:23:12.548834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bedesten_mcp_module\\client.py",
+        "size": 7846,
+        "modified": "2025-09-02T11:23:12.549834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bedesten_mcp_module\\enums.py",
+        "size": 5257,
+        "modified": "2025-09-02T11:23:12.549834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bedesten_mcp_module\\models.py",
+        "size": 4169,
+        "modified": "2025-09-02T11:23:12.549834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\bedesten_mcp_module\\__init__.py",
+        "size": 33,
+        "modified": "2025-09-02T11:23:12.549834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\danistay_mcp_module\\client.py",
+        "size": 9439,
+        "modified": "2025-09-02T11:23:12.550834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\danistay_mcp_module\\models.py",
+        "size": 5787,
+        "modified": "2025-09-02T11:23:12.550834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\danistay_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.550834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\emsal_mcp_module\\client.py",
+        "size": 8441,
+        "modified": "2025-09-02T11:23:12.552835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\emsal_mcp_module\\models.py",
+        "size": 4614,
+        "modified": "2025-09-02T11:23:12.552835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\emsal_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.551835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\kik_mcp_module\\client.py",
+        "size": 65894,
+        "modified": "2025-09-02T11:23:12.553835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\kik_mcp_module\\models.py",
+        "size": 3671,
+        "modified": "2025-09-02T11:23:12.554835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\kik_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.553835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\kvkk_mcp_module\\client.py",
+        "size": 15525,
+        "modified": "2025-09-02T11:23:12.554835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\kvkk_mcp_module\\models.py",
+        "size": 3062,
+        "modified": "2025-09-02T11:23:12.555834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\kvkk_mcp_module\\__init__.py",
+        "size": 29,
+        "modified": "2025-09-02T11:23:12.554835"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth\\clerk_config.py",
+        "size": 2599,
+        "modified": "2025-09-02T11:23:12.555834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth\\middleware.py",
+        "size": 12144,
+        "modified": "2025-09-02T11:23:12.555834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth\\oauth.py",
+        "size": 10996,
+        "modified": "2025-09-02T11:23:12.556834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth\\policy.py",
+        "size": 7581,
+        "modified": "2025-09-02T11:23:12.556834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth\\storage.py",
+        "size": 4338,
+        "modified": "2025-09-02T11:23:12.556834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\mcp_auth\\__init__.py",
+        "size": 681,
+        "modified": "2025-09-02T11:23:12.555834"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\rekabet_mcp_module\\client.py",
+        "size": 24480,
+        "modified": "2025-09-02T11:23:12.562803"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\rekabet_mcp_module\\models.py",
+        "size": 3548,
+        "modified": "2025-09-02T11:23:12.562803"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\rekabet_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.562803"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\sayistay_mcp_module\\client.py",
+        "size": 30667,
+        "modified": "2025-09-02T11:23:12.564801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\sayistay_mcp_module\\enums.py",
+        "size": 3103,
+        "modified": "2025-09-02T11:23:12.564801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\sayistay_mcp_module\\models.py",
+        "size": 11872,
+        "modified": "2025-09-02T11:23:12.564801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\sayistay_mcp_module\\unified_client.py",
+        "size": 5626,
+        "modified": "2025-09-02T11:23:12.564801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\sayistay_mcp_module\\__init__.py",
+        "size": 1394,
+        "modified": "2025-09-02T11:23:12.563802"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\uyusmazlik_mcp_module\\client.py",
+        "size": 12754,
+        "modified": "2025-09-02T11:23:12.565801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\uyusmazlik_mcp_module\\models.py",
+        "size": 4472,
+        "modified": "2025-09-02T11:23:12.566802"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\uyusmazlik_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.565801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\yargitay_mcp_module\\client.py",
+        "size": 8960,
+        "modified": "2025-09-02T11:23:12.566802"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\yargitay_mcp_module\\models.py",
+        "size": 5593,
+        "modified": "2025-09-02T11:23:12.567801"
+      },
+      {
+        "path": "saidsurucu-yargi-mcp-f5fa007\\yargitay_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-09-02T11:23:12.566802"
+      },
+      {
+        "path": "sayistay_mcp_module\\client.py",
+        "size": 30667,
+        "modified": "2025-09-02T11:23:12.567801"
+      },
+      {
+        "path": "sayistay_mcp_module\\enums.py",
+        "size": 3103,
+        "modified": "2025-09-02T11:23:12.567801"
+      },
+      {
+        "path": "sayistay_mcp_module\\models.py",
+        "size": 11872,
+        "modified": "2025-09-02T11:23:12.568801"
+      },
+      {
+        "path": "sayistay_mcp_module\\unified_client.py",
+        "size": 5626,
+        "modified": "2025-09-02T11:23:12.568801"
+      },
+      {
+        "path": "sayistay_mcp_module\\__init__.py",
+        "size": 1394,
+        "modified": "2025-07-13T15:11:36.280551"
+      },
+      {
+        "path": "uyusmazlik_mcp_module\\client.py",
+        "size": 12787,
+        "modified": "2025-09-02T11:23:12.571804"
+      },
+      {
+        "path": "uyusmazlik_mcp_module\\models.py",
+        "size": 4472,
+        "modified": "2025-09-02T11:23:12.571804"
+      },
+      {
+        "path": "uyusmazlik_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.282556"
+      },
+      {
+        "path": "yargitay_mcp_module\\client.py",
+        "size": 8960,
+        "modified": "2025-09-02T11:23:12.572804"
+      },
+      {
+        "path": "yargitay_mcp_module\\models.py",
+        "size": 5593,
+        "modified": "2025-09-02T11:23:12.572804"
+      },
+      {
+        "path": "yargitay_mcp_module\\__init__.py",
+        "size": 0,
+        "modified": "2025-07-13T15:11:36.282556"
+      }
+    ],
+    "config_files": [
+      ".env",
+      "Dockerfile",
+      "pyproject.toml",
+      "requirements.txt",
+      "saidsurucu-yargi-mcp-f5fa007\\Dockerfile",
+      "saidsurucu-yargi-mcp-f5fa007\\pyproject.toml"
+    ],
+    "documentation": [
+      "CLAUDE.md",
+      "legal_expert_panel.md",
+      "project_management.md",
+      "README.md",
+      "README_TURKLAWAI_API.md",
+      "TURKLAWAI_DEPLOYMENT_GUIDE.md",
+      "docs\\DEPLOYMENT.md",
+      "saidsurucu-yargi-mcp-f5fa007\\README.md",
+      "saidsurucu-yargi-mcp-f5fa007\\docs\\DEPLOYMENT.md"
+    ],
+    "tests": [
+      "static\\test.html"
+    ]
+  },
+  "git_info": {
+    "current_commit": "a9d4876e52451190612e651f29d22a038cea81ae",
+    "current_branch": "main",
+    "has_uncommitted_changes": true,
+    "repository": "https://github.com/your-repo/yargi-mcp"
+  },
+  "dependencies": {
+    "python": [
+      "fastmcp",
+      "httpx",
+      "beautifulsoup4",
+      "markitdown[pdf]",
+      "pydantic",
+      "aiohttp",
+      "playwright",
+      "pypdf",
+      "fastapi>=0.115.14",
+      "uvicorn[standard]>=0.30.0",
+      "starlette>=0.37.0",
+      "jinja2>=3.1.0",
+      "python-multipart>=0.0.6",
+      "See pyproject.toml"
+    ],
+    "system": []
+  },
+  "api_endpoints": []
+}
