@@ -1,0 +1,17 @@
+{
+  "name": "turklawai-netlify-functions",
+  "version": "1.0.0",
+  "description": "TurkLawAI Backend API as Netlify Functions",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "netlify build",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "@supabase/supabase-js": "^2.38.0",
+    "jsonwebtoken": "^9.0.2"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  }
+}
