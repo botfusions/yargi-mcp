@@ -6,12 +6,12 @@
 
 [[redirects]]
   from = "/api/auth/login"
-  to = "/.netlify/functions/auth-login"
+  to = "/.netlify/functions/auth-login-sqlite"
   status = 200
 
 [[redirects]]
   from = "/api/health"
-  to = "/.netlify/functions/health"  
+  to = "/.netlify/functions/health-standalone"  
   status = 200
 
 [build.environment]
