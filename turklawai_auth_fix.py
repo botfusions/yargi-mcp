@@ -134,6 +134,44 @@ class EmergencyAuth:
         except Exception as e:
             return {"success": False, "message": f"Hata: {str(e)}"}
     
+    async def authenticate_user(self, email: str, password: str) -> dict:
+        """Authenticate user with email/password"""
+        try:
+            # Query user from Supabase
+            result = await self.supabase.query_data("users", {"email": email})
+            
+            if not result["success"] or not result["data"]:
+                return {"success": False, "message": "Kullanıcı bulunamadı"}
+            
+            user = result["data"][0]
+            
+            # Verify password
+            if not self.verify_password(password, user["password_hash"]):
+                return {"success": False, "message": "Şifre yanlış"}
+            
+            # Check if user is active
+            if user.get("status") != "active":
+                return {"success": False, "message": "Hesap aktif değil"}
+            
+            # Create JWT token
+            token = self.create_jwt_token(user)
+            
+            return {
+                "success": True,
+                "message": "Giriş başarılı",
+                "user": {
+                    "id": user.get("id"),
+                    "email": user["email"],
+                    "full_name": user.get("full_name", ""),
+                    "plan": user.get("plan", "free"),
+                    "status": user.get("status", "active")
+                },
+                "token": token
+            }
+            
+        except Exception as e:
+            return {"success": False, "message": f"Authentication error: {str(e)}"}
+    
     async def verify_token(self, token: str) -> dict:
         """Verify user token and return user info"""
         try:

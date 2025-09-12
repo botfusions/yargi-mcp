@@ -14,7 +14,7 @@ from supabase_client import supabase_client
 from dotenv import load_dotenv
 import os
 import bcrypt
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 
 # Load environment variables
 load_dotenv()
@@ -29,15 +29,18 @@ JWT_EXPIRE_HOURS = 24
 try:
     from yargitay_mcp_module.client import YargitayOfficialApiClient
     from yargitay_mcp_module.models import YargitayDetailedSearchRequest, YargitayBirimEnum
-    from bedesten_mcp_module.client import BedestenApiClient, DanistayApiClient, EmsalApiClient
-    from bedesten_mcp_module.models import BedestenSearchRequest, DanistayBirimEnum
-    from emsal_mcp_module.client import EmsalOfficialApiClient
-    from emsal_mcp_module.models import EmsalDetailedSearchRequest, EmsalRegionalCivilChambersEnum
+    from bedesten_mcp_module.client import BedestenApiClient
+    from bedesten_mcp_module.models import BedestenSearchRequest
+    from danistay_mcp_module.client import DanistayApiClient
+    from emsal_mcp_module.client import EmsalApiClient
+    from emsal_mcp_module.models import EmsalSearchRequest
     
     # Initialize clients
     yargitay_client = YargitayOfficialApiClient()
     danistay_client = DanistayApiClient()
-    emsal_client = EmsalOfficialApiClient()
+    emsal_client = EmsalApiClient()
+    bedesten_mcp_client = BedestenApiClient()
+    yargi_mcp_client = yargitay_client  # For health check compatibility
     
     MCP_AVAILABLE = True
     print("Yargi MCP clients imported successfully")
@@ -47,6 +50,8 @@ except ImportError as e:
     yargitay_client = None
     danistay_client = None
     emsal_client = None
+    bedesten_mcp_client = None
+    yargi_mcp_client = None
 
 # Import Mevzuat MCP functions
 try:
@@ -99,6 +104,11 @@ app.add_middleware(
 # Configuration
 JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
 ENABLE_SUBSCRIPTION_SYSTEM = os.getenv("ENABLE_SUBSCRIPTION_SYSTEM", "false").lower() == "true"
+
+# MCP Client variables (will be initialized based on available imports)
+yargi_mcp_client = None
+mevzuat_mcp_client = None
+bedesten_mcp_client = None
 
 # Security
 security = HTTPBearer(auto_error=False)
@@ -316,7 +326,7 @@ def generate_jwt_token(user_data: dict) -> str:
         "exp": datetime.now(timezone.utc) + timedelta(hours=24),
         "iat": datetime.now(timezone.utc)
     }
-    return jwt.encode(payload, JWT_SECRET_KEY or "fallback-secret-key", algorithm="HS256")
+    return jwt.encode(payload, JWT_SECRET_KEY, algorithm="HS256")
 
 async def create_user_account(user_data: UserRegister) -> dict:
     """Create new user account with free subscription"""
@@ -431,7 +441,7 @@ async def health():
 
 # Authentication Endpoints
 
-@app.post("/auth/register", response_model=dict)
+@app.post("/api/auth/register", response_model=dict)
 async def register_user(user_data: UserRegister):
     """Register a new user account"""
     try:
@@ -464,7 +474,7 @@ async def register_user(user_data: UserRegister):
         print(f"Registration error: {e}")
         raise HTTPException(status_code=500, detail="Registration failed")
 
-@app.post("/auth/login", response_model=dict)
+@app.post("/api/auth/login", response_model=dict)
 async def login_user(login_data: UserLogin):
     """Login user and return JWT token"""
     try:
@@ -492,7 +502,7 @@ async def login_user(login_data: UserLogin):
         print(f"Login error: {e}")
         raise HTTPException(status_code=500, detail="Login failed")
 
-@app.post("/auth/logout")
+@app.post("/api/auth/logout")
 async def logout_user():
     """Logout user (client-side token removal)"""
     return {
@@ -1020,6 +1030,499 @@ async def get_mevzuat_article_content(
         
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Article content error: {str(e)}")
+
+# Subscription Management Endpoints
+
+class PlanUpgradeRequest(BaseModel):
+    plan: str = Field(..., description="Target plan: basic, professional, enterprise")
+
+@app.post("/api/subscription/upgrade")
+async def upgrade_subscription_plan(
+    upgrade_request: PlanUpgradeRequest,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Upgrade user's subscription plan (for testing - in production would integrate with Stripe)"""
+    
+    # Validate plan
+    valid_plans = ["basic", "professional", "enterprise"]
+    if upgrade_request.plan not in valid_plans:
+        raise HTTPException(
+            status_code=400,
+            detail=f"Invalid plan. Must be one of: {valid_plans}"
+        )
+    
+    user_id = user["user_id"]
+    
+    try:
+        # Update user subscription in database
+        subscription_data = {
+            'plan': upgrade_request.plan,
+            'status': 'active',
+            'requests_used': 0,
+            'requests_limit': RATE_LIMITS[upgrade_request.plan]['requests_per_month'],
+            'billing_period_start': datetime.now(timezone.utc).isoformat(),
+            'billing_period_end': (datetime.now(timezone.utc) + timedelta(days=30)).isoformat(),
+            'updated_at': datetime.now(timezone.utc).isoformat()
+        }
+        
+        # In a real implementation, this would update the existing subscription
+        # For demo purposes, we'll create a new subscription entry
+        result = await supabase_client.insert_data('user_subscriptions', {
+            'user_id': user_id,
+            **subscription_data
+        })
+        
+        if result['success']:
+            return {
+                "success": True,
+                "message": f"Successfully upgraded to {upgrade_request.plan} plan",
+                "new_plan": upgrade_request.plan,
+                "new_limits": RATE_LIMITS[upgrade_request.plan],
+                "billing_cycle": "monthly"
+            }
+        else:
+            raise HTTPException(status_code=500, detail="Failed to update subscription")
+            
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Subscription upgrade error: {str(e)}")
+
+@app.get("/api/subscription/plans")
+async def get_available_plans():
+    """Get all available subscription plans and their limits"""
+    
+    plans = {}
+    for plan_name, limits in RATE_LIMITS.items():
+        if plan_name == "free":
+            price = 0
+        elif plan_name == "basic":
+            price = 29.99
+        elif plan_name == "professional":
+            price = 99.99
+        elif plan_name == "enterprise":
+            price = 299.99
+        else:
+            price = 0
+            
+        plans[plan_name] = {
+            "name": plan_name.title(),
+            "price_monthly": price,
+            "requests_per_minute": limits["requests_per_minute"],
+            "requests_per_month": limits["requests_per_month"],
+            "features": [
+                f"Up to {limits['requests_per_month']} searches per month",
+                f"Up to {limits['requests_per_minute']} searches per minute",
+                "Turkish legal database access",
+                "API access" if plan_name != "free" else "Limited API access"
+            ]
+        }
+    
+    return {
+        "success": True,
+        "plans": plans,
+        "currency": "USD"
+    }
+
+# Frontend-Compatible API Endpoints (for turklaw-ai-insight GitHub repo)
+
+# Yargi API endpoints
+@app.get("/api/yargi/health")
+async def yargi_health_check():
+    """Health check endpoint for Yargi services"""
+    try:
+        # Check if MCP clients are available
+        yargi_available = yargi_mcp_client is not None
+        mevzuat_available = mevzuat_mcp_client is not None
+        
+        return {
+            "status": "healthy" if (yargi_available or mevzuat_available) else "degraded",
+            "services": {
+                "yargi_mcp": "available" if yargi_available else "unavailable",
+                "mevzuat_mcp": "available" if mevzuat_available else "unavailable"
+            },
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Health check failed: {str(e)}")
+
+@app.post("/api/yargi/bedesten/search")
+async def search_bedesten_api(
+    request: Dict[str, Any],
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Bedesten search endpoint compatible with frontend"""
+    try:
+        if not bedesten_mcp_client:
+            raise HTTPException(status_code=503, detail="Bedesten service unavailable")
+        
+        # Map frontend params to backend params
+        phrase = request.get('phrase', '')
+        court_types = request.get('court_types', ['YARGITAYKARARI'])
+        page_number = request.get('pageNumber', 1)
+        
+        from bedesten_mcp_module.models import BedestenSearchRequest, BedestenSearchData
+        
+        search_data = BedestenSearchData(
+            pageSize=10,
+            pageNumber=page_number,
+            itemTypeList=court_types,
+            phrase=phrase,
+            birimAdi="ALL"
+        )
+        
+        search_request = BedestenSearchRequest(data=search_data)
+        result = await bedesten_mcp_client.search_documents(search_request)
+        
+        # Convert to frontend format
+        decisions = []
+        if result.data and result.data.emsalKararList:
+            for decision in result.data.emsalKararList:
+                decisions.append({
+                    "id": decision.documentId,
+                    "title": f"{decision.birimAdi or 'Unknown'} - {decision.kararNo or 'No Decision Number'}",
+                    "court": decision.itemType.name if decision.itemType else "Unknown",
+                    "chamber": decision.birimAdi or "",
+                    "date": decision.kararTarihi,
+                    "summary": f"Esas No: {decision.esasNo or 'N/A'}, Karar No: {decision.kararNo or 'N/A'}",
+                    "caseNumber": decision.esasNo,
+                    "decisionNumber": decision.kararNo,
+                    "documentType": "decision",
+                    "metadata": {
+                        "documentId": decision.documentId,
+                        "itemType": decision.itemType.model_dump() if decision.itemType else None,
+                        "kararTuru": decision.kararTuru,
+                        "kesinlesmeDurumu": decision.kesinlesmeDurumu
+                    }
+                })
+        
+        return {
+            "results": decisions,
+            "total_records": result.data.total if result.data else 0,
+            "requested_page": page_number,
+            "page_size": 10,
+            "searched_courts": court_types
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bedesten search error: {str(e)}")
+
+@app.get("/api/yargi/bedesten/document/{document_id}")
+async def get_bedesten_document_api(
+    document_id: str,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Get Bedesten document endpoint compatible with frontend"""
+    try:
+        if not bedesten_mcp_client:
+            raise HTTPException(status_code=503, detail="Bedesten service unavailable")
+        
+        result = await bedesten_mcp_client.get_document_as_markdown(document_id)
+        
+        return {
+            "markdown_content": result.markdown_content,
+            "source_url": result.source_url,
+            "mime_type": result.mime_type
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Document retrieval error: {str(e)}")
+
+# Mevzuat API endpoints
+@app.post("/api/mevzuat/search")
+async def search_mevzuat_api(
+    request: Dict[str, Any],
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Mevzuat search endpoint compatible with frontend"""
+    try:
+        if not mevzuat_mcp_client:
+            raise HTTPException(status_code=503, detail="Mevzuat service unavailable")
+        
+        # Map frontend params to backend params
+        phrase = request.get('phrase', '')
+        mevzuat_adi = request.get('mevzuat_adi', '')
+        page_number = request.get('page_number', 1)
+        page_size = request.get('page_size', 10)
+        
+        # Use phrase for general search or mevzuat_adi for specific name search
+        search_term = phrase or mevzuat_adi
+        
+        from mevzuat_mcp_module.models import MevzuatSearchRequest
+        
+        search_request = MevzuatSearchRequest(
+            mevzuat_adi=search_term,
+            page_number=page_number,
+            page_size=page_size
+        )
+        
+        result = await mevzuat_mcp_client.search_legislation(search_request)
+        
+        # Convert to frontend format
+        legislation_results = []
+        if result.mevzuat_listesi:
+            for legislation in result.mevzuat_listesi:
+                legislation_results.append({
+                    "id": str(legislation.mevzuat_id),
+                    "title": legislation.mevzuat_adi,
+                    "type": legislation.mevzuat_turu,
+                    "number": legislation.mevzuat_no,
+                    "date": legislation.resmi_gazete_tarihi.isoformat() if legislation.resmi_gazete_tarihi else "",
+                    "summary": f"Resmi Gazete: {legislation.resmi_gazete_no or 'N/A'}",
+                    "url": legislation.url,
+                    "metadata": {
+                        "mevzuat_id": legislation.mevzuat_id,
+                        "mevzuat_turu": legislation.mevzuat_turu,
+                        "resmi_gazete_no": legislation.resmi_gazete_no,
+                        "resmi_gazete_tarihi": legislation.resmi_gazete_tarihi.isoformat() if legislation.resmi_gazete_tarihi else None
+                    }
+                })
+        
+        return {
+            "results": legislation_results,
+            "total_records": result.total_count,
+            "requested_page": page_number,
+            "page_size": page_size
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Mevzuat search error: {str(e)}")
+
+@app.get("/api/mevzuat/legislation/{mevzuat_id}/structure")
+async def get_mevzuat_structure_api(
+    mevzuat_id: int,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Get legislation structure endpoint compatible with frontend"""
+    try:
+        if not mevzuat_mcp_client:
+            raise HTTPException(status_code=503, detail="Mevzuat service unavailable")
+        
+        from mevzuat_mcp_module.models import MevzuatStructureRequest
+        
+        request_obj = MevzuatStructureRequest(mevzuat_id=mevzuat_id)
+        result = await mevzuat_mcp_client.get_legislation_structure(request_obj)
+        
+        return result.model_dump()
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Structure retrieval error: {str(e)}")
+
+@app.get("/api/mevzuat/legislation/{mevzuat_id}/article/{madde_id}")
+async def get_mevzuat_article_api(
+    mevzuat_id: int,
+    madde_id: str,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Get legislation article endpoint compatible with frontend"""
+    try:
+        if not mevzuat_mcp_client:
+            raise HTTPException(status_code=503, detail="Mevzuat service unavailable")
+        
+        from mevzuat_mcp_module.models import MevzuatArticleRequest
+        
+        request_obj = MevzuatArticleRequest(
+            mevzuat_id=mevzuat_id,
+            madde_id=madde_id
+        )
+        
+        result = await mevzuat_mcp_client.get_article_content(request_obj)
+        
+        return {
+            "markdown_content": result.markdown_content,
+            "source_url": result.source_url if hasattr(result, 'source_url') else f"https://www.mevzuat.gov.tr/mevzuat?MevzuatNo={mevzuat_id}",
+            "mime_type": "text/markdown"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Article retrieval error: {str(e)}")
+
+# Frontend-compatible Yargi API endpoints
+@app.get("/api/yargi/health")
+async def check_yargi_health():
+    """Health check endpoint for Yargi MCP services"""
+    return {
+        "status": "healthy" if MCP_AVAILABLE else "fallback_mode",
+        "timestamp": datetime.now(timezone.utc).isoformat(),
+        "services": {
+            "yargitay": "available" if yargitay_client else "unavailable",
+            "bedesten": "available" if bedesten_mcp_client else "unavailable",
+            "danistay": "available" if danistay_client else "unavailable",
+            "emsal": "available" if emsal_client else "unavailable"
+        }
+    }
+
+@app.post("/api/yargi/bedesten/search")
+async def search_bedesten_api(
+    request: Dict[str, Any],
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Bedesten search endpoint compatible with frontend"""
+    try:
+        if not bedesten_mcp_client:
+            raise HTTPException(status_code=503, detail="Bedesten service unavailable")
+        
+        # Map frontend request to backend format
+        search_request = BedestenSearchRequest(
+            phrase=request.get("phrase", ""),
+            court_types=request.get("court_types", ["YARGITAYKARARI"]),
+            birimAdi=request.get("birimAdi", ""),
+            kararTarihiStart=request.get("kararTarihiStart"),
+            kararTarihiEnd=request.get("kararTarihiEnd"),
+            pageNumber=request.get("pageNumber", 1),
+            pageSize=request.get("pageSize", 10)
+        )
+        
+        result = await bedesten_mcp_client.search_unified(search_request)
+        
+        return {
+            "results": [decision.model_dump() for decision in result.decisions],
+            "total_records": result.total_records,
+            "requested_page": result.requested_page,
+            "page_size": result.page_size,
+            "searched_courts": request.get("court_types", ["YARGITAYKARARI"]),
+            "query": request.get("phrase", "")
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Bedesten search error: {str(e)}")
+
+@app.get("/api/yargi/bedesten/document/{document_id}")
+async def get_bedesten_document_api(
+    document_id: str,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Get Bedesten document endpoint compatible with frontend"""
+    try:
+        if not bedesten_mcp_client:
+            raise HTTPException(status_code=503, detail="Bedesten service unavailable")
+        
+        result = await bedesten_mcp_client.get_document_markdown(document_id)
+        
+        return {
+            "markdown_content": result.markdown_content,
+            "source_url": result.source_url if hasattr(result, 'source_url') else "",
+            "mime_type": "text/markdown"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Document retrieval error: {str(e)}")
+
+@app.post("/api/yargi/anayasa/search")
+async def search_anayasa_api(
+    request: Dict[str, Any],
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Anayasa search endpoint compatible with frontend"""
+    try:
+        # For now, return a placeholder response until Anayasa client is properly integrated
+        return {
+            "results": [],
+            "total_records": 0,
+            "current_page": 1,
+            "page_size": 10,
+            "message": "Anayasa search temporarily unavailable - under development"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Anayasa search error: {str(e)}")
+
+@app.get("/api/yargi/anayasa/document")
+async def get_anayasa_document_api(
+    document_url: str,
+    page_number: int = 1,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Get Anayasa document endpoint compatible with frontend"""
+    try:
+        return {
+            "markdown_content": "Anayasa document content temporarily unavailable - under development",
+            "source_url": document_url,
+            "mime_type": "text/markdown"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Anayasa document retrieval error: {str(e)}")
+
+@app.post("/api/yargi/emsal/search") 
+async def search_emsal_api(
+    request: Dict[str, Any],
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Emsal search endpoint compatible with frontend"""
+    try:
+        if not emsal_client:
+            raise HTTPException(status_code=503, detail="Emsal service unavailable")
+        
+        # Map frontend request to backend format
+        search_request = EmsalSearchRequest(
+            keyword=request.get("keyword", ""),
+            start_date=request.get("start_date", ""),
+            end_date=request.get("end_date", ""),
+            page_number=request.get("page_number", 1),
+            selected_regional_civil_chambers=request.get("selected_regional_civil_chambers", []),
+            sort_criteria=request.get("sort_criteria", "1"),
+            sort_direction=request.get("sort_direction", "desc")
+        )
+        
+        result = await emsal_client.search_emsal(search_request)
+        
+        return {
+            "results": [decision.model_dump() for decision in result.decisions],
+            "total_records": result.total_records,
+            "requested_page": result.requested_page,
+            "page_size": result.page_size
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Emsal search error: {str(e)}")
+
+@app.get("/api/yargi/emsal/document/{document_id}")
+async def get_emsal_document_api(
+    document_id: str,
+    user: Dict[str, Any] = Depends(verify_token)
+):
+    """Get Emsal document endpoint compatible with frontend"""
+    try:
+        if not emsal_client:
+            raise HTTPException(status_code=503, detail="Emsal service unavailable")
+        
+        result = await emsal_client.get_document_markdown(document_id)
+        
+        return {
+            "markdown_content": result.markdown_content,
+            "source_url": result.source_url if hasattr(result, 'source_url') else "",
+            "mime_type": "text/markdown"
+        }
+        
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Emsal document retrieval error: {str(e)}")
+
+# Frontend-compatible Mevzuat API endpoints (additional ones)
+@app.get("/api/mevzuat/popular")
+async def get_popular_legislation_api(user: Dict[str, Any] = Depends(verify_token)):
+    """Get popular legislation endpoint compatible with frontend"""
+    try:
+        # Return placeholder popular legislation
+        return [
+            {"id": 1, "name": "Türk Ceza Kanunu", "type": "KANUN"},
+            {"id": 2, "name": "Türk Medeni Kanunu", "type": "KANUN"},
+            {"id": 3, "name": "Borçlar Kanunu", "type": "KANUN"}
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Popular legislation error: {str(e)}")
+
+@app.get("/api/mevzuat/types")
+async def get_legislation_types_api(user: Dict[str, Any] = Depends(verify_token)):
+    """Get legislation types endpoint compatible with frontend"""
+    try:
+        return [
+            {"value": "KANUN", "label": "Kanun"},
+            {"value": "KANUN_HUKMUNDE_KARARNAME", "label": "Kanun Hükmünde Kararname"},
+            {"value": "YONETMELIK", "label": "Yönetmelik"},
+            {"value": "TUZUK", "label": "Tüzük"},
+            {"value": "CUMHURBASKANI_KARARI", "label": "Cumhurbaşkanı Kararı"}
+        ]
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Legislation types error: {str(e)}")
 
 if __name__ == "__main__":
     import uvicorn

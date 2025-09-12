@@ -652,6 +652,6 @@ async def api_info():
         }
     }
 
-print("🔧 Web UI temporarily disabled - MCP API only")
-print("💚 Health check at http://your-domain/health")
-print("🔗 MCP endpoint at http://your-domain/mcp/")
+print("Web UI temporarily disabled - MCP API only")
+print("Health check at http://your-domain/health")
+print("MCP endpoint at http://your-domain/mcp/")
